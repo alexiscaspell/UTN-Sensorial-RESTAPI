@@ -1,0 +1,9 @@
+# DEPENDENCIAS
+
+flask
+gunicorn
+requests
+bson
+psutil
+netifaces
+stringcase

@@ -1,0 +1,65 @@
+on: 
+  push:
+    branches:
+      - 'master'
+      - 'dev'
+      - 'development'
+      - 'desarrollo'
+      - 'pre'
+      - 'staging'
+      - 'stage'
+name: deploy
+jobs:
+  deploy:
+    name: deploy to cluster
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set Actions Allow Unsecure Commands
+      run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+    - name: get current branch
+      run: echo ::set-env name=BRANCH::$(echo ${GITHUB_REF#refs/heads/})
+    # - name: get current branch
+    #   shell: bash
+    #   run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+    #   id: get_branch
+
+    - name: checkout code from branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{env.BRANCH}}
+        fetch-depth: 0
+
+    - name: get previous tag
+      run: echo ::set-env name=LATEST_TAG::$(./scripts/git/get_actual_tag.sh)
+        
+    - name: set new tag environment variable
+      run: echo ::set-env name=NEXT_TAG::$(. scripts/git/set_next_tag_by_branch.sh ${{ env.LATEST_TAG}} ${{ env.BRANCH}})
+
+    - name: set latest docker tag
+      run: echo ::set-env name=LATEST_DOCKER_TAG::$(. scripts/docker/set_docker_latest_by_branch.sh ${{env.BRANCH}})
+
+    - name: build and push to docker
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: alexiscaspell/sensorial-restapi
+        tag_with_ref: false
+        tag_with_sha: false
+        add_git_labels: true
+        tags: ${{ env.NEXT_TAG }},${{env.LATEST_DOCKER_TAG}}
+        #push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        # push: ${{ steps.get_branch.outputs.branch!='master'}}
+
+    - name: create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: "v${{ env.NEXT_TAG }}"
+        release_name: Release ${{ env.NEXT_TAG }}
+        body: |
+            "Realease v${{ env.NEXT_TAG }}"
+        draft: false
+        prerelease: false
