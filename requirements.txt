@@ -7,3 +7,4 @@ bson
 psutil
 netifaces
 stringcase
+mongoengine
