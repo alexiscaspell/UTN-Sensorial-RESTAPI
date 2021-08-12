@@ -15,6 +15,6 @@ blue_print = Blueprint(URI,
                        url_prefix=conf.get(Vars.API_BASE_PATH)+VERSION+URI)
 
 
-@blue_print.route('/hard', methods=['GET'])
-def get_usuario_hard():
-    return get_valid_rest_object(user_service.get_usuario_hard())
+@blue_print.route('', methods=['GET'])
+def get_all_usuarios():
+    return get_valid_rest_object(user_service.get_all_usuarios())
