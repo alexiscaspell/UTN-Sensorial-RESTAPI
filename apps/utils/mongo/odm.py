@@ -6,7 +6,7 @@ from mongoengine import (Document, DateTimeField, ComplexDateTimeField,
                          DecimalField, FloatField, ObjectIdField, DateTimeField
                          )
 
-from utils.logger_util import get_logger
+from apps.utils.logger_util import get_logger
 
 logger = get_logger(__name__)
 

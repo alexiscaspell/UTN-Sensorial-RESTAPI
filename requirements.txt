@@ -7,4 +7,5 @@ bson
 psutil
 netifaces
 stringcase
+pymongo[srv]
 mongoengine

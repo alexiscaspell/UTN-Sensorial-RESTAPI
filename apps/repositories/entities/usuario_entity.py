@@ -2,8 +2,8 @@ from mongoengine import (DateTimeField, Document, EmbeddedDocument,DictField,
                          EmbeddedDocumentField, EmbeddedDocumentListField,
                          ListField, StringField, ObjectIdField)
 
-from models.usuario import Usuario
-from utils.mongo.odm import EasyDocument
+from apps.models.usuario import Usuario
+from apps.utils.mongo.odm import EasyDocument
 
 
 class UsuarioDocument(Document, EasyDocument):
