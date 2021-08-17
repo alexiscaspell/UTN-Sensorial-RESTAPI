@@ -71,6 +71,6 @@ jobs:
         heroku_app_name: "sensorial-back" #Must be unique in Heroku
         heroku_email: "${{secrets.HEROKU_EMAIL}}"
         usedocker: true
-        healthcheck: https://sensorial-back.herokuapp.com/alive
-        checkstring: '{"estado": "vivo"}'
-        delay: 30
+        # healthcheck: https://sensorial-back.herokuapp.com/alive
+        # checkstring: '{"estado": "vivo"}'
+        # delay: 30
