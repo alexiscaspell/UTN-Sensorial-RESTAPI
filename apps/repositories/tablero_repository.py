@@ -1,9 +1,11 @@
+from typing import List
+
 from apps.models.indicador import Indicador
 from apps.models.tablero import Tablero
 from apps.repositories.entities.tablero_entity import TableroDocument
 from apps.utils.mongo import mongo_connector
-from typing import List
 from apps.utils.mongo.mongo_connector import MongoQueryBuilder, get_by_filter
+from bson import ObjectId
 
 
 def _get_tableros():
@@ -28,12 +30,11 @@ def get_all() -> List[Tablero]:
 
 
 def get_indicador(id: str, indicador_id: str) -> Indicador:
-    query = MongoQueryBuilder(TableroDocument).add_id_filter(id).add_filter(
-        {"indicadores.id": indicador_id}).add_return_field({"indicadores.$": 1}).build()
+    query = MongoQueryBuilder(TableroDocument).add_id_filter(id).add_filter({"indicadores._id": ObjectId(indicador_id)}).add_slice_field("indicadores", 0,1).build()
 
-    tablero = mongo_connector.get_by_filter(query)
+    result = mongo_connector.get_by_filter(query)
 
-    if tablero is None or "indicadores" not in tablero:
+    if result is None or len(result)==0 or "indicadores" not in result[0]:
         return None
 
-    return Indicador.from_dict(tablero["indicadores"][0])
+    return Indicador.from_dict(result[0]["indicadores"][0])

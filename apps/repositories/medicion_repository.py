@@ -13,16 +13,16 @@ def guardar_varias(mediciones: List[Medicion]):
     return [mongo_connector.insert(MedicionDocument.from_model(m)) for m in mediciones]
 
 
-def get_mediciones(sensor_id: str, count: int = None, sort: tuple = None) -> List[Medicion]:
+def get_mediciones(sensor_id: str, count: int = None, sort: dict = None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument).add_filter(
         {"id_sensor": sensor_id})
     if count:
         query = query.page(0, count)
 
     if sort:
-        query = query.sort_by(dict(sort))
+        query = query.sort_by(sort)
 
-    query = query.add_exclude_field("_id")
+    query = query.add_exclude_field("_id").build()
 
     resultados = mongo_connector.get_by_filter(query)
 

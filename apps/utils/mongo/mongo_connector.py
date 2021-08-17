@@ -66,16 +66,20 @@ class MongoQueryBuilder:
         return self
 
     def sort_by(self,sort_spec:dict):
-        if self.sort is None:
-            self.sort = {}
+        if self.mongo_query.sort is None:
+            self.mongo_query.sort = {}
             
-        self.sort.update(sort_spec)
+        self.mongo_query.sort.update(sort_spec)
+
+        return self
 
     def add_return_field(self,return_field:dict):
-        if self.returned_fields is None:
-            self.returned_fields = {}
+        if self.mongo_query.returned_fields is None:
+            self.mongo_query.returned_fields = {}
             
-        self.returned_fields.update(return_field) 
+        self.mongo_query.returned_fields.update(return_field)
+
+        return self
 
     def build(self):
         return self.mongo_query

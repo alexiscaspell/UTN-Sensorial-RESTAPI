@@ -46,16 +46,22 @@ class EasyDocument:
         limit = limit if limit else 50
         filters = filters if filters else {}
 
+
         try:
-            mongo_query = cls.objects(__raw__=filters)[skip:skip+limit]
+            default_query = cls.objects(__raw__=filters)
+            mongo_query = default_query[skip:skip+limit]
+            
+            # mongo_query = cls.objects(__raw__=filters)[skip:skip+limit]
 
             if slice_fields is not None:
                 slice_fields_parameter = {f"slice__{k}":slice_fields[k] for k in slice_fields}
 
-                mongo_query = cls.objects(__raw__=filters).fields(**slice_fields_parameter)[skip:skip+limit]
+                mongo_query = default_query.fields(**slice_fields_parameter)[skip:skip+limit]
 
             if sort is not None:
-                mongo_query = mongo_query.sort([(k,pymongo.ASCENDING if v=="asc" else pymongo.DESCENDING) for k,v in sort])
+                params=[k if sort[k]=="asc" else "-"+k for k in sort]
+                mongo_query = mongo_query.order_by(*params)
+                # mongo_query = mongo_query.sort([(k,pymongo.ASCENDING if v=="asc" else pymongo.DESCENDING) for k,v in sort])
 
             for elem in mongo_query:
                 yield mongo_to_dict(elem, exclude_fields)
