@@ -1,5 +1,5 @@
 # DEPENDENCIAS
-
+Flask-Cors
 flask
 gunicorn
 requests
@@ -7,3 +7,5 @@ bson
 psutil
 netifaces
 stringcase
+pymongo[srv]
+mongoengine

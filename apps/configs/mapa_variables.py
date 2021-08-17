@@ -17,6 +17,8 @@ DEVELOPMENT = {
     "API_BASE_PATH": "/api",
     "LOG_LEVEL": DEBUG,
     "DIRECTORIO_LOGS": "./logs",
+    "MONGODB_URL": "mongodb+srv://sensorialuser:sensorial.1234@sensorial-cluster.eg348.mongodb.net/sensorial-db?authSource=admin&replicaSet=atlas-zbeyeh-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
+    # "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
     "ENV": ENVIRONMENT_MODE
 }
 PRODUCTION = {
@@ -26,6 +28,7 @@ PRODUCTION = {
     "API_BASE_PATH": "/api",
     "LOG_LEVEL": INFO,
     "DIRECTORIO_LOGS": "./logs",
+    "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
     "ENV": ENVIRONMENT_MODE
 }
 
