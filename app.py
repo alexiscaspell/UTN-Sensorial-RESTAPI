@@ -24,7 +24,7 @@ connect(host=conf.get(Vars.MONGODB_URL))
 
 if __name__ == '__main__':
 
-    possible_ports = [int(conf.get(Vars.HEROKU_PORT)),int(conf.get(Vars.API_PORT)), 80, 5000]
+    possible_ports = [int(conf.get(Vars.API_PORT)), 80, 5000]
 
     for port in possible_ports:
         try:
