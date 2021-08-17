@@ -15,8 +15,9 @@ def convert_to_case(cadena:str,case:Case):
 
 def _cast_to_datetime(value):
     converted_value = None
-    possible_formats = ["%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%S.%f",
+    possible_formats = ["%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%S.%f","%Y-%m-%d %H:%M:%S.%fZ",
                         "%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", '%Y-%m-%d %H:%M:%S', "%Y-%m-%dT%H:%M:%SZ"]
+
 
     for possible_format in possible_formats:
         try:
@@ -27,7 +28,7 @@ def _cast_to_datetime(value):
             continue
 
     raise RuntimeError(f"No es posible castear {value} a datetime")
-
+    
 def change_keys(obj, convert):
     """
     Recursively goes through the dictionary obj and replaces keys with the convert function.
