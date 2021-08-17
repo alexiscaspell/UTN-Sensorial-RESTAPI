@@ -5,7 +5,8 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
                          ListField, ObjectIdField, StringField)
 
 
-class ReporteDocument(Document, EasyDocument):
+class ReporteDocument(EmbeddedDocument, EasyDocument):
+    id = ObjectIdField(db_field="_id",required=True)
     destinatarios = ListField(required=True)
     nombre = StringField(required=True)
     descripcion = StringField(required=False)

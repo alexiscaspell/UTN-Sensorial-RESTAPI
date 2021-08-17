@@ -1,5 +1,6 @@
 from bson import ObjectId
 from typing import Dict, Iterable
+import pymongo
 from mongoengine import (Document, DateTimeField, ComplexDateTimeField,
                          EmbeddedDocument, StringField, IntField, BooleanField,
                          ListField, DictField, EmbeddedDocumentField,
@@ -38,7 +39,7 @@ class EasyDocument:
         return cls.objects(id=ObjectId(id)).delete()
 
     @classmethod
-    def easy_get_documents(cls, skip: int = 0, limit: int = 50, filters: Dict = {}, exclude_fields=[],slice_fields=None) -> Iterable[Dict]:
+    def easy_get_documents(cls, skip: int = 0, limit: int = 50, filters: Dict = {}, exclude_fields=[],slice_fields=None,sort=None) -> Iterable[Dict]:
         '''Devuelve objetos de mongo'''
 
         skip = skip if skip else 0
@@ -46,13 +47,19 @@ class EasyDocument:
         filters = filters if filters else {}
 
         try:
+            mongo_query = cls.objects(__raw__=filters)[skip:skip+limit]
+
             if slice_fields is not None:
                 slice_fields_parameter = {f"slice__{k}":slice_fields[k] for k in slice_fields}
-                for elem in cls.objects(__raw__=filters).fields(**slice_fields_parameter)[skip:skip+limit]:
-                    yield mongo_to_dict(elem, exclude_fields)
-            else:
-                for elem in cls.objects(__raw__=filters)[skip:skip+limit]:
-                    yield mongo_to_dict(elem, exclude_fields)
+
+                mongo_query = cls.objects(__raw__=filters).fields(**slice_fields_parameter)[skip:skip+limit]
+
+            if sort is not None:
+                mongo_query = mongo_query.sort([(k,pymongo.ASCENDING if v=="asc" else pymongo.DESCENDING) for k,v in sort])
+
+            for elem in mongo_query:
+                yield mongo_to_dict(elem, exclude_fields)
+
         except Exception as e:
             logger.error(e)
             for e in []:

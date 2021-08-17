@@ -24,6 +24,8 @@ class MongoQuery:
         self.items_per_page = mongo_query_spec.get("items_per_page", None)
         self.exclude_fields = mongo_query_spec.get("exclude_fields", [])
         self.slice_fields = mongo_query_spec.get("slice_fields", None)
+        self.sort = mongo_query_spec.get("sort", None)
+        self.returned_fields = mongo_query_spec.get("returned_fields", None)
 
 
 class MongoQueryBuilder:
@@ -34,6 +36,9 @@ class MongoQueryBuilder:
         self.mongo_query.filters = filters
         return self
 
+    def add_id_filter(self, value):
+        return self.add_filter({"_id":ObjectId(value)})
+        
     def add_filter(self, filter):
         if self.mongo_query.filters is None:
             self.mongo_query.filters = {}
@@ -60,6 +65,18 @@ class MongoQueryBuilder:
             {slice_field: [page_number*page_size, page_size]})
         return self
 
+    def sort_by(self,sort_spec:dict):
+        if self.sort is None:
+            self.sort = {}
+            
+        self.sort.update(sort_spec)
+
+    def add_return_field(self,return_field:dict):
+        if self.returned_fields is None:
+            self.returned_fields = {}
+            
+        self.returned_fields.update(return_field) 
+
     def build(self):
         return self.mongo_query
 
@@ -83,7 +100,7 @@ def get_by_filter(query: MongoQuery) -> List[Dict]:
 
     elems = []
 
-    for o in query.collection.easy_get_documents(skip=offset, limit=query.items_per_page, filters=query.filters, exclude_fields=query.exclude_fields, slice_fields=query.slice_fields):
+    for o in query.collection.easy_get_documents(skip=offset, limit=query.items_per_page, filters=query.filters, exclude_fields=query.exclude_fields, slice_fields=query.slice_fields,sort=query.sort):
         elems.append(o)
 
     return elems

@@ -1,32 +1,31 @@
 from apps.models.sensor import Sensor
 from apps.models.medicion import Medicion
-from apps.models.indicador import Indicador, IndicadorRequest, IndicadorResult, Unidad
+from apps.models.indicador import Indicador, IndicadorRequest, IndicadorResult, TipoIndicador, UnidadValor
 from typing import Dict, List
-from apps.repositories import indicador_repository
-from apps.repositories import sensor_repository as sr
+from apps.repositories import tablero_repository
+from apps.repositories import medicion_repository as mr
 
 
 def _get_mediciones(sensor: Sensor, request_indicador: IndicadorRequest)->List[Medicion]:
-    if(request_indicador.muestras):
-        muestras_totales = sr.contar_mediciones(sensor.id)
+    return mr.get_mediciones(sensor.id, count=request_indicador.muestras,sort=("fecha","desc"))
 
-        step = round(request_indicador.muestras/muestras_totales)
-
-        return sr.get_mediciones(sensor.id, step=step, count=request_indicador.muestras)
-    else:
-        return sr.get_mediciones_por_fechas(sensor.id, request_indicador.desde, request_indicador.hasta)
+def procesar_indicador_produccion(indicador:Indicador,request:IndicadorRequest)->List[IndicadorResult]:
+    raise NotImplementedError("No se sabe procesar aun un indicador de produccion")
 
 
 def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorResult]:
-    indicador: Indicador = indicador_repository.get_by_id(
-        request_indicador.id)
+    indicador: Indicador = tablero_repository.get_indicador(request_indicador.id_tablero,request_indicador.id)
+
+    if indicador.tipo==TipoIndicador.produccion:
+        return procesar_indicador_produccion(indicador,request_indicador)
+    
     resultados = []
 
-    unidad = Unidad.porcentaje if len(
-        indicador.sensores) > 1 else Unidad.absoluto
+    unidad = UnidadValor.porcentaje if len(
+        indicador.sensores) > 1 else UnidadValor.absoluto
 
     for id_sensor, mediciones in map(lambda s: (s.id, _get_mediciones(s, request_indicador)), indicador.sensores):
         resultados.append(IndicadorResult(
-            id_sensor, mediciones.sum()/len(mediciones), unidad))
+            id_sensor,[m.valor for m in mediciones], unidad))
 
     return resultados

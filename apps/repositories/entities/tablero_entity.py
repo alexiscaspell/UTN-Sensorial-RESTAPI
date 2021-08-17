@@ -1,5 +1,5 @@
-from apps.models.indicador import Indicador
-from apps.models.usuario import Usuario
+from apps.models.sensor import Sensor
+from apps.models.tablero import Tablero
 from apps.repositories.entities.indicador_entity import IndicadorDocument
 from apps.repositories.entities.objetivo_entity import ObjetivoDocument
 from apps.repositories.entities.reporte_entity import ReporteDocument
@@ -9,15 +9,20 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
                          ListField, ObjectIdField, StringField)
 
 
-class IndicadorDocument(Document, EasyDocument):
-    meta = {'collection': 'dashboards'}
+class SensorTableroDocument(EmbeddedDocument, EasyDocument):
 
-    sensors = ListField(required=True)
-    limitSuperior = StringField(required=True)
-    limitInferior = ListField(required=False)
-
-    descripcion = StringField(required=False)
     nombre = StringField(required=True)
+    tipo = StringField(required=True)
+
+    @staticmethod
+    def from_model(model: Sensor):
+        document = SensorTableroDocument(**model.to_dict())
+        return document
+class TableroDocument(Document, EasyDocument):
+    meta = {'collection': 'dashboards',"strict":False}
+
+    nombre = StringField(required=True)
+    descripcion = StringField(required=False)
     fecha_creacion = DateTimeField(required=False)
 
     reportes = EmbeddedDocumentListField(ReporteDocument)
@@ -25,8 +30,8 @@ class IndicadorDocument(Document, EasyDocument):
     indicadores = EmbeddedDocumentListField(IndicadorDocument)
 
     @staticmethod
-    def from_model(model: Indicador):
-        document = IndicadorDocument(**model.to_dict())
+    def from_model(model: Tablero):
+        document = TableroDocument(**model.to_dict())
         return document
 
 

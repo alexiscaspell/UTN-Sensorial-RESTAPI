@@ -14,14 +14,8 @@ def _get_usuarios():
         if not resultados:
             raise UsuarioNotFoundException()
 
-        usuarios=[]
-
-        for u in resultados:
-            usuario = Usuario(u)
-            usuarios.append(usuario)
-
-        return usuarios
-    except Exception as e:
+        return [Usuario.from_dict(u) for u in resultados]
+    except Exception as _:
         pass
 
     return []
