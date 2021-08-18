@@ -5,7 +5,7 @@ from apps.models.sensor import Sensor
 from datetime import datetime
 
 
-@model_metadata({})
+@model_metadata({"fecha":datetime})
 class Medicion(AppModel):
     def __init__(self, medicion_spec: Dict):
         self.id = medicion_spec.get("id", None)
