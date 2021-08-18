@@ -26,7 +26,7 @@ def _group_df_por_tiempo(df:pd.DataFrame,unidad:UnidadTiempo):
         funcion = lambda e: e.isocalendar()[1]
     elif unidad==UnidadTiempo.mes:
         funcion = lambda e: (e.year,e.month)
-    elif unidad==UnidadTiempo.mes:
+    elif unidad==UnidadTiempo.anio:
         funcion = lambda e: e.year
 
     df["f_order"] = df["fecha"].apply(funcion )

@@ -16,6 +16,7 @@ class UnidadTiempo(Enum):
     dia = "dia"
     semana = "semana"
     mes = "mes"
+    anio = "anio"
 
 
 @model_metadata({"unidad": UnidadValor})
