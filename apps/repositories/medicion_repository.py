@@ -29,7 +29,7 @@ def get_mediciones(sensor_id: str, count: int = None, sort: dict = None) -> List
     return [Medicion.from_dict(r) for r in resultados]
 
 
-def get_mediciones_por_fechas(sensor_id: str, fecha_desde: datetime, fecha_hasta: datetime) -> List[Medicion]:
+def get_mediciones_por_fechas(sensor_id: str, fecha_desde: datetime, fecha_hasta: datetime,sort=None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument)
 
     filter_id = {"id_sensor": sensor_id}
@@ -49,6 +49,9 @@ def get_mediciones_por_fechas(sensor_id: str, fecha_desde: datetime, fecha_hasta
     query.filters(
         {"$and": [filter_id, filter_fecha_desde, filter_fecha_hasta]})
 
-    resultados = mongo_connector.get_by_filter(query)
+    if sort:
+        query = query.sort_by(sort)
+
+    resultados = mongo_connector.get_by_filter(query.build())
 
     return [Medicion.from_dict(r) for r in resultados]

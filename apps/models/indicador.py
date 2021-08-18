@@ -34,7 +34,7 @@ class IndicadorHistoricoRequest(AppModel):
         self.granularidad = request_spec.get("granularidad", 1)
         self.unidad = request_spec.get("unidad", UnidadTiempo.mes)
         self.hasta = request_spec.get("hasta", datetime.now())
-        self.desde = request_spec.get("desde", self.desde-timedelta(days=1))
+        self.desde = request_spec.get("desde", self.hasta-timedelta(days=1))
 
 
 class IndicadorRequest(AppModel):

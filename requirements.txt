@@ -3,7 +3,7 @@ Flask-Cors
 flask
 gunicorn
 requests
-# bson
+pandas
 psutil
 netifaces
 stringcase
