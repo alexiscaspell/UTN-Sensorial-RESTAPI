@@ -26,7 +26,7 @@ def calcular_indicador(id_tablero: str, id_indicador: str):
 
     request_indicador = IndicadorRequest.from_dict(body)
 
-    result = [r.to_dict()
+    result = [r.to_json()
               for r in indicador_service.procesar_indicador(request_indicador)]
 
     return jsonify(result), HTTPStatus.OK
@@ -40,7 +40,7 @@ def calcular_indicador_historico(id_tablero: str, id_indicador: str):
 
     request_indicador = IndicadorHistoricoRequest.from_dict(body)
 
-    result = [r.to_dict() for r in indicador_service.procesar_indicador_historico(
+    result = [r.to_json() for r in indicador_service.procesar_indicador_historico(
         request_indicador)]
 
     return jsonify(result), HTTPStatus.OK

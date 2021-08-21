@@ -4,7 +4,7 @@ from apps.models.indicador import Indicador
 
 # pendiente,no cumplido,cumplido
 
-@model_metadata({"indicadores":Indicador})
+@model_metadata({})
 class Objetivo(AppModel):
     def __init__(self, objetivo_spec: Dict):
         self.id = objetivo_spec.get("id", None)

@@ -5,7 +5,7 @@ from apps.models.sensor import Sensor
 from datetime import datetime
 
 
-@model_metadata({"fecha":datetime})
+@model_metadata({"fecha": datetime})
 class Medicion(AppModel):
     def __init__(self, medicion_spec: Dict):
         self.id = medicion_spec.get("id", None)
@@ -14,6 +14,10 @@ class Medicion(AppModel):
         self.tipo_sensor = medicion_spec["tipo_sensor"]
         self.unidad = medicion_spec.get("unidad", None)
         self.fecha = medicion_spec.get("fecha", datetime.now())
+
+    def to_json(self):
+        result = super().to_dict()
+        return {"valor": result["valor"], "fecha": result["fecha"]}
 
 
 @model_metadata({})

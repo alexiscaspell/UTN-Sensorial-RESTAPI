@@ -83,6 +83,9 @@ class AppModel(object):
             elif isinstance(value, Enum):
                 self_dict[key] = value.value
 
+            elif isinstance(value, datetime.datetime):
+                self_dict[key] = value.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
         for attrname in dir(self.__class__):
             if isinstance(getattr(self.__class__, attrname), property):
                 self_dict[attrname] = getattr(self, attrname)
