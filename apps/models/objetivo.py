@@ -1,10 +1,19 @@
 from typing import Dict,List
 from apps.models.app_model import AppModel,model_metadata
 from apps.models.indicador import Indicador
+from enum import Enum
 
-# pendiente,no cumplido,cumplido
+class ObjetivoStatus(Enum):
+    pendiente = "pendiente"
+    no_cumplido = "no_cumplido"
+    cumplido = "cumplido"
+@model_metadata({"status":ObjetivoStatus})
+class ObjetivoResult(AppModel):
+    def __init__(self,result_spec):
+        self.id_objetivo = result_spec["id_objetivo"]
+        self.status = result_spec["status"]
 
-@model_metadata({"indicadores":Indicador})
+@model_metadata({})
 class Objetivo(AppModel):
     def __init__(self, objetivo_spec: Dict):
         self.id = objetivo_spec.get("id", None)

@@ -3,6 +3,7 @@ from logging import disable
 from typing import Dict, List
 from apps.models.app_model import AppModel, model_metadata
 from apps.models.sensor import Sensor
+from apps.models.medicion import Medicion
 from enum import Enum
 
 
@@ -16,15 +17,22 @@ class UnidadTiempo(Enum):
     dia = "dia"
     semana = "semana"
     mes = "mes"
+    anio = "anio"
 
 
-@model_metadata({"unidad": UnidadValor})
+@model_metadata({"unidad": UnidadValor,"valores":Medicion})
 class IndicadorResult(AppModel):
     def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor):
         self.id_sensor = id_sensor
         self.valores = valores
         self.unidad = unidad
-
+    
+    def to_json(self):
+        return {
+            "id_sensor":self.id_sensor,
+            "unidad":self.unidad.value,
+            "valores":[v.to_json() for v in self.valores]
+        }
 
 @model_metadata({"desde": datetime, "hasta": datetime, "unidad": UnidadTiempo})
 class IndicadorHistoricoRequest(AppModel):
