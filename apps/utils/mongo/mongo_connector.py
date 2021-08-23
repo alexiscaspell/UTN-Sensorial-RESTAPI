@@ -37,6 +37,10 @@ class MongoQueryBuilder:
         return self
 
     def add_id_filter(self, value):
+        if isinstance(value,dict):
+            key = list(value.keys())[0]
+            return self.add_filter({f"{key}._id":ObjectId(value[key])})
+
         return self.add_filter({"_id":ObjectId(value)})
         
     def add_filter(self, filter):
