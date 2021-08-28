@@ -16,7 +16,12 @@ def get(variable):
     '''
     variable = variable.value if isinstance(variable, Enum) else variable
 
-    return os.environ.get(f"{APP_NAME}".upper()+f"_{variable}", _get_mapa_variables()[variable])
+    valor = os.environ.get(variable, None)
+    
+    if valor is None:
+        return os.environ.get(f"{APP_NAME}".upper()+f"_{variable}", _get_mapa_variables()[variable])
+
+    return valor
 
 
 def variables_cargadas() -> dict:
