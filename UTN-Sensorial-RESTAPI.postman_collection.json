@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "obtener tableros",
+			"name": "obtener usuarios",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"desde\":\"2021-07-17 06:32:01.659Z\",\n    \"hasta\":\"2021-09-17 06:32:01.659Z\",\n    \"granularidad\":1,\n    \"unidad\":\"mes\"\n}",
+					"raw": "{\n    \"desde\":\"2021-07-17 06:32:01.659Z\",\n    \"hasta\":\"2021-11-17 06:32:01.659Z\",\n    \"granularidad\":1,\n    \"unidad\":\"mes\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -89,7 +89,7 @@
 			"response": []
 		},
 		{
-			"name": "obtener usuarios",
+			"name": "obtener tableros",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -114,6 +114,121 @@
 						"api",
 						"v1",
 						"tableros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "healthcheck",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"muestras\":2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-sensorial-back}}/alive",
+					"host": [
+						"{{url-sensorial-back}}"
+					],
+					"path": [
+						"alive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "guardar medicion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.373576\"\n    },\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.922150\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-sensorial-back}}/api/v1/mediciones",
+					"host": [
+						"{{url-sensorial-back}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"mediciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postman collection",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"muestras\":2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-sensorial-back}}/postman",
+					"host": [
+						"{{url-sensorial-back}}"
+					],
+					"path": [
+						"postman"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "obtener variables",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"muestras\":2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-sensorial-back}}/vars",
+					"host": [
+						"{{url-sensorial-back}}"
+					],
+					"path": [
+						"vars"
 					]
 				}
 			},

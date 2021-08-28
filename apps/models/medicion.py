@@ -31,7 +31,7 @@ class MedicionRaspberry(AppModel):
         self.value = medicion_spec["value"]
 
     def to_medicion(self) -> Medicion:
-        Medicion.from_dict({
+        return Medicion.from_dict({
             "valor": self.value,
             "id_sensor": self.mac,
             "tipo_sensor": self.sensor_type,

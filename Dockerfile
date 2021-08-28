@@ -40,6 +40,8 @@ RUN rm requirements.txt
 # COMPILACION
 COPY ./apps ./src/apps
 COPY ./app.py ./src
+COPY ./*.postman_collection.json ./
+
 
 RUN python -m compile -b -f -o ./dist ./src
 RUN mv -f ./dist/src/* .
