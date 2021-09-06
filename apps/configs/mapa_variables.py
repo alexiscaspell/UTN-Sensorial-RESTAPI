@@ -16,7 +16,7 @@ DEVELOPMENT = {
     "PYTHON_PORT":  5000,
     "API_BASE_PATH": "/api",
     "LOG_LEVEL": DEBUG,
-    "DIRECTORIO_LOGS": "./logs",
+    "DIRECTORIO_LOGS": "logs/",
     "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
     "ENV": ENVIRONMENT_MODE
 }
@@ -26,7 +26,7 @@ PRODUCTION = {
     "PYTHON_PORT":  5000,
     "API_BASE_PATH": "/api",
     "LOG_LEVEL": INFO,
-    "DIRECTORIO_LOGS": "./logs",
+    "DIRECTORIO_LOGS": "logs/",
     "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
     "ENV": ENVIRONMENT_MODE
 }

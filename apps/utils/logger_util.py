@@ -11,6 +11,7 @@ _DIRECTORIO_LOGS = conf.get(Vars.DIRECTORIO_LOGS)
 _NOMBRE_LOG_PREDEFINIDO = APP_NAME
 _NIVEL_LOGS = conf.get(Vars.LOG_LEVEL)
 
+
 _loggers = {}
 
 

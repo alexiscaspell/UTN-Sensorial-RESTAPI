@@ -39,6 +39,9 @@ def path_join(*args):
 
 
 def make_directory_if_not_exists(path):
+
+    if not isinstance(path,str):
+        return
     if not os.path.isdir(path):
         intentos = 0
 

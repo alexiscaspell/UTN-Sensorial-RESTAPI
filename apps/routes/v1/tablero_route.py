@@ -1,6 +1,7 @@
 from apps.models.indicador import IndicadorRequest, IndicadorHistoricoRequest
 from apps.models.app_model import AppModel
 from http import HTTPStatus
+from flask_cors import cross_origin
 
 from flask import Blueprint, jsonify, request
 from apps.utils.rest_util import get_valid_rest_object, get_body
@@ -19,13 +20,14 @@ blue_print = Blueprint(URI,
                        url_prefix=conf.get(Vars.API_BASE_PATH)+VERSION+URI)
 
 
+@cross_origin()
 @blue_print.route('/<id_tablero>/objetivos/<id_objetivo>/calculado', methods=['GET'])
 def calcular_objetivo(id_tablero: str, id_objetivo: str):
     result = indicador_service.procesar_objetivo(id_tablero, id_objetivo)
 
     return jsonify(result.to_dict()), HTTPStatus.OK
 
-
+@cross_origin()
 @blue_print.route('/<id_tablero>/indicadores/<id_indicador>/calculado', methods=['POST'])
 def calcular_indicador(id_tablero: str, id_indicador: str):
     body = get_body(request)
@@ -39,7 +41,7 @@ def calcular_indicador(id_tablero: str, id_indicador: str):
 
     return jsonify(result), HTTPStatus.OK
 
-
+@cross_origin()
 @blue_print.route('/<id_tablero>/indicadores/<id_indicador>/historico', methods=['POST'])
 def calcular_indicador_historico(id_tablero: str, id_indicador: str):
     body = get_body(request)
