@@ -6,6 +6,7 @@ from apps.repositories.entities.tablero_entity import TableroDocument
 from apps.utils.mongo import mongo_connector
 from apps.utils.mongo.mongo_connector import MongoQueryBuilder, get_by_filter
 from bson import ObjectId
+from apps.models.exception import IndicadorNotFoundException
 
 
 def _get_tableros():
@@ -36,7 +37,7 @@ def get_indicador(id: str, indicador_id: str) -> Indicador:
     result = mongo_connector.get_by_filter(query)
 
     if result is None or len(result) == 0 or "indicadores" not in result[0]:
-        return None
+        raise IndicadorNotFoundException(indicador_id)
 
     indicador_result=None
 
