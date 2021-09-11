@@ -53,13 +53,25 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
 
         b = b.groupby(by="f_order")
         b = b.mean(numeric_only=False)
+        b = b.reset_index()
 
         muestras_json = b.to_json(orient='records', date_format="iso")
+        muestras = json.loads(muestras_json)
+
+        for m in muestras:
+            m["fecha"]=m["f_order"] if isinstance(m["f_order"],list) else [m["f_order"]]
+            m.pop("f_order",None)
+
+            if len(m["fecha"])<3:
+                for _ in range(3-len(m["fecha"])):
+                    m["fecha"].append(1)
+
+            m["fecha"]=datetime(*m["fecha"])
 
         base = r.valores[0].to_dict()
 
         r.valores = [Medicion.from_dict({**base, **e})
-                     for e in json.loads(muestras_json)]
+                     for e in muestras]
 
     return resultados
 

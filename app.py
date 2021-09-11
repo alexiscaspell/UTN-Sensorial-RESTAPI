@@ -12,6 +12,7 @@ from apps.utils.logger_util import get_logger
 from flask_cors import CORS
 from apps.configs.vars import Vars
 import apps.configs.configuration as conf
+import certifi
 
 app = Flask(__name__)
 app.register_blueprint(error_handler_bp)
@@ -20,7 +21,8 @@ registrar_blue_prints(app, 'apps/routes')
 
 logger = get_logger(__name__)
 
-connect(host=conf.get(Vars.MONGODB_URL))
+connect(host=conf.get(Vars.MONGODB_URL),tlsCAFile=certifi.where())
+
 
 if __name__ == '__main__':
 
