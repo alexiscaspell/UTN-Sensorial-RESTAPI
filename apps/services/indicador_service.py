@@ -9,6 +9,7 @@ from typing import Dict, List
 from apps.repositories import tablero_repository
 from apps.repositories import medicion_repository as mr
 import pandas as pd
+from isoweek import Week
 
 
 def get_mediciones(sensor: str, count=None, desde=None, hasta=None) -> List[Medicion]:
@@ -25,11 +26,28 @@ def _get_funcion_groupby(unidad: UnidadTiempo):
     elif unidad == UnidadTiempo.dia:
         def funcion(e): return (e.year, e.month, e.day)
     elif unidad == UnidadTiempo.semana:
-        def funcion(e): return e.isocalendar()[1]
+        def funcion(e): return (e.isocalendar()[0],e.isocalendar()[1])
     elif unidad == UnidadTiempo.mes:
         def funcion(e): return (e.year, e.month)
     elif unidad == UnidadTiempo.anio:
         def funcion(e): return e.year
+
+    return funcion
+
+def _get_inversa_funcion_groupby(unidad: UnidadTiempo):
+
+    date_to_datetime = lambda e: datetime(e.year,e.month,e.day)
+
+    if unidad == UnidadTiempo.hora:
+        def funcion(e): return datetime(*e)
+    elif unidad == UnidadTiempo.dia:
+        def funcion(e): return datetime(*e)
+    elif unidad == UnidadTiempo.semana:
+        def funcion(e): return date_to_datetime(Week(e[0], e[1]).monday())
+    elif unidad == UnidadTiempo.mes:
+        def funcion(e): return datetime(*(e+[1]))
+    elif unidad == UnidadTiempo.anio:
+        def funcion(e): return datetime(e,1,1)
 
     return funcion
 
@@ -40,6 +58,7 @@ def get_indicador(id_tablero: str, id_indicador: str) -> Indicador:
 
 def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: TipoIndicador, unidad_tiempo: UnidadTiempo) -> List[IndicadorResult]:
     funcion = _get_funcion_groupby(unidad_tiempo)
+    funcion_inversa = _get_inversa_funcion_groupby(unidad_tiempo)
 
     for r in resultados:
         if len(r.valores) == 0:
@@ -59,14 +78,16 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
         muestras = json.loads(muestras_json)
 
         for m in muestras:
-            m["fecha"]=m["f_order"] if isinstance(m["f_order"],list) else [m["f_order"]]
-            m.pop("f_order",None)
+            m["fecha"] = m["f_order"]
+            m["fecha"] = funcion_inversa(m["fecha"])
+            # m["fecha"]=m["f_order"] if isinstance(m["f_order"],list) else [m["f_order"]]
+            # m.pop("f_order",None)
 
-            if len(m["fecha"])<3:
-                for _ in range(3-len(m["fecha"])):
-                    m["fecha"].append(1)
+            # if len(m["fecha"])<3:
+            #     for _ in range(3-len(m["fecha"])):
+            #         m["fecha"].append(1)
 
-            m["fecha"]=datetime(*m["fecha"])
+            # m["fecha"]=datetime(*m["fecha"])
 
         base = r.valores[0].to_dict()
 

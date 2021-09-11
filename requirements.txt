@@ -9,3 +9,4 @@ netifaces
 stringcase
 pymongo[srv]
 mongoengine
+isoweek
