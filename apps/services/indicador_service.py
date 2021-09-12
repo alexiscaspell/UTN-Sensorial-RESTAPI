@@ -22,34 +22,34 @@ def get_mediciones(sensor: str, count=None, desde=None, hasta=None) -> List[Medi
 def _get_funcion_groupby(unidad: UnidadTiempo):
 
     if unidad == UnidadTiempo.hora:
-        def funcion(e): return (e.year, e.month, e.day, e.hour)
+        return lambda e: (e.year, e.month, e.day, e.hour)
     elif unidad == UnidadTiempo.dia:
-        def funcion(e): return (e.year, e.month, e.day)
+        return lambda e: (e.year, e.month, e.day)
     elif unidad == UnidadTiempo.semana:
-        def funcion(e): return (e.isocalendar()[0],e.isocalendar()[1])
+        return lambda e: (e.isocalendar()[0],e.isocalendar()[1])
     elif unidad == UnidadTiempo.mes:
-        def funcion(e): return (e.year, e.month)
+        return lambda e: (e.year, e.month)
     elif unidad == UnidadTiempo.anio:
-        def funcion(e): return e.year
+        return lambda e: e.year
 
-    return funcion
+    return None
 
 def _get_inversa_funcion_groupby(unidad: UnidadTiempo):
 
     date_to_datetime = lambda e: datetime(e.year,e.month,e.day)
 
     if unidad == UnidadTiempo.hora:
-        def funcion(e): return datetime(*e)
+        return lambda e: datetime(*e)
     elif unidad == UnidadTiempo.dia:
-        def funcion(e): return datetime(*e)
+        return lambda e: datetime(*e)
     elif unidad == UnidadTiempo.semana:
-        def funcion(e): return date_to_datetime(Week(e[0], e[1]).monday())
+        return lambda e: date_to_datetime(Week(e[0], e[1]).monday())
     elif unidad == UnidadTiempo.mes:
-        def funcion(e): return datetime(*(e+[1]))
+        return lambda e: datetime(*(e+[1]))
     elif unidad == UnidadTiempo.anio:
-        def funcion(e): return datetime(e,1,1)
+        return lambda e:  datetime(e,1,1)
 
-    return funcion
+    return None
 
 
 def get_indicador(id_tablero: str, id_indicador: str) -> Indicador:
@@ -109,7 +109,7 @@ def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[Ind
         mediciones = get_mediciones(
             s.id, desde=request.desde, hasta=request.hasta)
         resultados.append(IndicadorResult(
-            s.id, mediciones, unidad))
+            s.id, mediciones, unidad,request.unidad,s.nombre))
 
     return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad)
 
@@ -139,8 +139,8 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
 
     for sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.sensores):
         id_sensor=sensor.id
-        
+
         resultados.append(IndicadorResult(
-            id_sensor, mediciones, unidad))
+            id_sensor, mediciones, unidad,UnidadTiempo.hora,sensor.nombre))
 
     return resultados

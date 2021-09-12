@@ -20,21 +20,71 @@ class UnidadTiempo(Enum):
     anio = "anio"
 
 
-@model_metadata({"unidad": UnidadValor,"valores":Medicion})
+@model_metadata({"unidad": UnidadValor,"valores":Medicion,"unidad_tiempo":UnidadTiempo})
 class IndicadorResult(AppModel):
-    def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor):
+    def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor,unidad_tiempo:UnidadTiempo,nombre_sensor=""):
         self.id_sensor = id_sensor
+        self.nombre_sensor = nombre_sensor
         self.valores = valores
         self.unidad = unidad
+        self.unidad_tiempo = unidad_tiempo
+
+    def _get_fecha_formateada(self,fecha:datetime):
+        if self.unidad_tiempo==UnidadTiempo.hora:
+            fecha=f"{fecha.day} {fecha.hour}"
+        elif self.unidad_tiempo==UnidadTiempo.dia:
+            fecha=f"{fecha.day}-{fecha.month}"
+        elif self.unidad_tiempo==UnidadTiempo.semana:
+            fecha=f"{fecha.day}-{fecha.month}"
+        elif self.unidad_tiempo==UnidadTiempo.mes:
+            fecha=f"{fecha.month}-{fecha.year}"
+        elif self.unidad_tiempo==UnidadTiempo.anio:
+            fecha=f"{fecha.year}"
+
+        return fecha
     
     def to_json(self):
-        return {
-            "id_sensor":self.id_sensor,
+        result = {
+            "nombre_sensor":self.nombre_sensor,
             "unidad":self.unidad.value,
             "valores":[v.to_json() for v in self.valores]
         }
+        for i,v in enumerate(result["valores"]):
+            v["fecha"] = self._get_fecha_formateada(self.valores[i].fecha)
 
-@model_metadata({"desde": datetime, "hasta": datetime, "unidad": UnidadTiempo})
+        return result
+
+class IndicadorResultList:
+    def __init__(self,resultados:List[IndicadorResult]):
+        self.resultados=resultados
+        pass
+
+    def to_json(self):
+        unidad = None if len(self.resultados)==0 else self.resultados[0].unidad.value
+
+        resultados_json = [r.to_json() for r in self.resultados]
+
+        fechas = []
+        for r in resultados_json:
+            for v in r["valores"]:
+                if v["fecha"] not in fechas:
+                    fechas.append(v["fecha"])
+
+        result = []
+
+        for fecha in fechas:
+            new_res = {"unidad":unidad,"fecha":fecha}
+
+            for r in resultados_json:
+                for v in r["valores"]:
+                    if v["fecha"]==fecha:
+                        new_res[r["nombre_sensor"]]=v["valor"]
+
+            result.append(new_res)
+
+        return result
+
+@model_metadata({"desde":datetime,"hasta":datetime,"unidad":UnidadTiempo})
 class IndicadorHistoricoRequest(AppModel):
     def __init__(self, request_spec: Dict):
         self.id = request_spec["id"]
@@ -43,7 +93,6 @@ class IndicadorHistoricoRequest(AppModel):
         self.unidad = request_spec.get("unidad", UnidadTiempo.mes)
         self.hasta = request_spec.get("hasta", datetime.now())
         self.desde = request_spec.get("desde", self.hasta-timedelta(days=1))
-
 
 class IndicadorRequest(AppModel):
     def __init__(self, request_spec: Dict):
