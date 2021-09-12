@@ -12,16 +12,16 @@ import pandas as pd
 from isoweek import Week
 
 
-def get_mediciones(sensor: str, count=None, desde=None, hasta=None) -> List[Medicion]:
+def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
     if count is not None:
-        return mr.get_mediciones(sensor, count=count, sort={"fecha": "asc"})
+        return mr.get_mediciones(sensor.id, count=count, sort={"fecha": "asc"})
     else:
-        return mr.get_mediciones_por_fechas(sensor, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
+        return mr.get_mediciones_por_fechas(sensor.id, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
 
 
 def _get_funcion_groupby(unidad: UnidadTiempo):
 
-    if unidad == UnidadTiempo.hora:
+    if unidad == UnidadTiempo.hora or unidad==UnidadTiempo.horas_minutos:
         return lambda e: (e.year, e.month, e.day, e.hour)
     elif unidad == UnidadTiempo.dia:
         return lambda e: (e.year, e.month, e.day)
@@ -38,7 +38,7 @@ def _get_inversa_funcion_groupby(unidad: UnidadTiempo):
 
     date_to_datetime = lambda e: datetime(e.year,e.month,e.day)
 
-    if unidad == UnidadTiempo.hora:
+    if unidad == UnidadTiempo.hora or unidad==UnidadTiempo.horas_minutos:
         return lambda e: datetime(*e)
     elif unidad == UnidadTiempo.dia:
         return lambda e: datetime(*e)
@@ -118,7 +118,7 @@ def procesar_indicador_produccion(indicador: Indicador, request: IndicadorReques
     request_historico = IndicadorHistoricoRequest({
         "id": request.id,
         "id_tablero": request.id_tablero,
-        "unidad": UnidadTiempo.hora,
+        "unidad": UnidadTiempo.horas_minutos,
         "desde": datetime.now()-timedelta(hours=request.muestras),
         "hasta": datetime.now(),
     })
@@ -141,6 +141,6 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
         id_sensor=sensor.id
 
         resultados.append(IndicadorResult(
-            id_sensor, mediciones, unidad,UnidadTiempo.hora,sensor.nombre))
+            id_sensor, mediciones, unidad,UnidadTiempo.horas_minutos,sensor.nombre))
 
     return resultados
