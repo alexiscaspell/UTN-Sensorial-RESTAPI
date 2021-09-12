@@ -14,9 +14,9 @@ from isoweek import Week
 
 def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
     if count is not None:
-        return mr.get_mediciones(sensor.MAC, count=count, sort={"fecha": "asc"})
+        return mr.get_mediciones(sensor.MAC, count=count, sort={"fecha": "desc"})
     else:
-        return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
+        return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "desc"})
 
 
 def _get_funcion_groupby(unidad: UnidadTiempo):

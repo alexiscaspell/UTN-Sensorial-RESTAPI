@@ -15,7 +15,7 @@ def guardar_varias(mediciones: List[Medicion]):
 
 def get_mediciones(mac: str, count: int = None, sort: dict = None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument).add_filter(
-        {"id_sensor": mac})
+        {"MAC": mac})
     if count:
         query = query.page(0, count)
 

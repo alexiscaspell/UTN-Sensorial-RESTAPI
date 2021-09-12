@@ -47,13 +47,14 @@ class IndicadorResult(AppModel):
         return fecha
 
     def to_json(self):
+        valores = list(reversed(self.valores))
         result = {
             "nombre_sensor": self.nombre_sensor,
             "unidad": self.unidad.value,
-            "valores": [v.to_json() for v in self.valores]
+            "valores": [v.to_json() for v in valores]
         }
         for i, v in enumerate(result["valores"]):
-            v["fecha"] = self._get_fecha_formateada(self.valores[i].fecha)
+            v["fecha"] = self._get_fecha_formateada(valores[i].fecha)
 
         return result
 

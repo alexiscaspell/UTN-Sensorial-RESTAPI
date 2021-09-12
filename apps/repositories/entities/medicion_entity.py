@@ -11,7 +11,7 @@ class MedicionDocument(Document, EasyDocument):
 
     valor = FloatField(required=True)
     unidad = StringField(required=False)
-    id_sensor = StringField(required=True)
+    MAC = StringField(required=True)
     tipo_sensor = StringField(required=True)
     fecha = DateTimeField(required=True)
 
