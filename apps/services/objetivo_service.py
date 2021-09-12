@@ -13,8 +13,8 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
 
     counts = []
 
-    for sensor in indicador.id_sensores:
-        mediciones = get_mediciones(sensor,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
+    for sensor in indicador.sensores:
+        mediciones = get_mediciones(sensor.id,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
 
         count=0
 
@@ -23,7 +23,7 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
                 if indicador.limite_inferior is None or m.valor>=indicador.limite_inferior:
                     count+=1 
 
-        counts.append({"sensor":sensor,"contador":count,"mediciones":len(mediciones)})
+        counts.append({"sensor":sensor.id,"contador":count,"mediciones":len(mediciones)})
 
     mediciones_totales=0
     contador_total=0

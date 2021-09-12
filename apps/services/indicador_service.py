@@ -14,7 +14,7 @@ from isoweek import Week
 
 def get_mediciones(sensor: str, count=None, desde=None, hasta=None) -> List[Medicion]:
     if count is not None:
-        return mr.get_mediciones(sensor, count=count, sort={"fecha": "desc"})
+        return mr.get_mediciones(sensor, count=count, sort={"fecha": "asc"})
     else:
         return mr.get_mediciones_por_fechas(sensor, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
 
@@ -103,13 +103,13 @@ def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[Ind
     resultados = []
 
     unidad = UnidadValor.porcentaje if len(
-        indicador.id_sensores) > 1 else UnidadValor.absoluto
+        indicador.sensores) > 1 else UnidadValor.absoluto
 
-    for s in indicador.id_sensores:
+    for s in indicador.sensores:
         mediciones = get_mediciones(
-            s, desde=request.desde, hasta=request.hasta)
+            s.id, desde=request.desde, hasta=request.hasta)
         resultados.append(IndicadorResult(
-            s, mediciones, unidad))
+            s.id, mediciones, unidad))
 
     return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad)
 
@@ -135,9 +135,11 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
     resultados = []
 
     unidad = UnidadValor.porcentaje if len(
-        indicador.id_sensores) > 1 else UnidadValor.absoluto
+        indicador.sensores) > 1 else UnidadValor.absoluto
 
-    for id_sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.id_sensores):
+    for sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.sensores):
+        id_sensor=sensor.id
+        
         resultados.append(IndicadorResult(
             id_sensor, mediciones, unidad))
 

@@ -59,12 +59,12 @@ class TipoIndicador(Enum):
     calidad_del_aire = "calidad_del_aire"
 
 
-@model_metadata({"tipo": TipoIndicador})
+@model_metadata({"tipo": TipoIndicador,"sensores":Sensor})
 class Indicador(AppModel):
     def __init__(self, indicador_spec: Dict):
         self.id = indicador_spec.get("id", None)
         self.nombre = indicador_spec["nombre"]
-        self.id_sensores = indicador_spec["id_sensores"]
+        self.sensores = indicador_spec["sensores"]
         self.tipo = indicador_spec["tipo"]
         self.limite_superior = indicador_spec.get("limite_superior", None)
         self.limite_superior = indicador_spec.get("limite_inferior", None)
