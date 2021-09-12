@@ -7,7 +7,7 @@ from apps.repositories.entities.tablero_entity import TableroDocument
 from apps.utils.mongo import mongo_connector
 from apps.utils.mongo.mongo_connector import MongoQueryBuilder, get_by_filter
 from bson import ObjectId
-from apps.models.exception import IndicadorNotFoundException
+from apps.models.exception import IndicadorNotFoundException,ObjetivoNotFoundException
 
 
 def _get_tableros():
@@ -37,7 +37,7 @@ def get_indicador(id: str, indicador_id: str) -> Indicador:
 
     result = mongo_connector.get_by_filter(query)
 
-    if result is None or len(result) == 0 or "indicadores" not in result[0]:
+    if result is None or len(result) == 0 or len(result[0].get("indicadores"))==0:
         raise IndicadorNotFoundException(indicador_id)
 
     indicador_result=None
@@ -58,7 +58,7 @@ def get_objetivo(id: str, objetivo_id: str) -> Objetivo:
 
     result = mongo_connector.get_by_filter(query)
 
-    if result is None or len(result) == 0 or "objetivos" not in result[0]:
+    if result is None or len(result) == 0 or len(result[0].get("objetivos"))==0:
         raise ObjetivoNotFoundException(objetivo_id)
 
     objetivo_result=None
