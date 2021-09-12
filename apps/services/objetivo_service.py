@@ -4,8 +4,11 @@ from apps.models.objetivo import Objetivo,ObjetivoResult, ObjetivoStatus
 from apps.repositories import tablero_repository
 from apps.services.indicador_service import get_mediciones,get_indicador
 
+def get_objetivo(id_tablero,id_objetivo)->Objetivo:
+    return tablero_repository.get_objetivo(id_tablero,id_objetivo)
+
 def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
-    objetivo:Objetivo = tablero_repository.get_objetivo(id_tablero, id_objetivo)
+    objetivo:Objetivo = get_objetivo(id_tablero, id_objetivo)
     indicador = get_indicador(id_tablero,objetivo.id_indicador)
 
     counts = []
@@ -29,7 +32,7 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
         contador_total+=c["contador"]
         mediciones_totales+=c["mediciones"]
 
-    status = ObjetivoStatus.cumplido if contador_total/mediciones_totales>=objetivo.valor else ObjetivoStatus.pendiente
+    status = ObjetivoStatus.cumplido if contador_total/max(mediciones_totales,1)>=float(objetivo.valor) else ObjetivoStatus.pendiente
 
     if datetime.now()> objetivo.fecha_final and status==ObjetivoStatus.pendiente:
         status = ObjetivoStatus.no_cumplido

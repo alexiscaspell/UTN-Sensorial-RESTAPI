@@ -23,7 +23,7 @@ blue_print = Blueprint(URI,
 @cross_origin()
 @blue_print.route('/<id_tablero>/objetivos/<id_objetivo>/calculado', methods=['GET'])
 def calcular_objetivo(id_tablero: str, id_objetivo: str):
-    result = indicador_service.procesar_objetivo(id_tablero, id_objetivo)
+    result = objetivo_service.procesar_objetivo(id_tablero, id_objetivo)
 
     return jsonify(result.to_dict()), HTTPStatus.OK
 
