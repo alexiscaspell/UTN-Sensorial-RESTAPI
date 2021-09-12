@@ -14,9 +14,9 @@ from isoweek import Week
 
 def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
     if count is not None:
-        return mr.get_mediciones(sensor.id, count=count, sort={"fecha": "asc"})
+        return mr.get_mediciones(sensor.MAC, count=count, sort={"fecha": "asc"})
     else:
-        return mr.get_mediciones_por_fechas(sensor.id, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
+        return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
 
 
 def _get_funcion_groupby(unidad: UnidadTiempo):
@@ -107,9 +107,9 @@ def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[Ind
 
     for s in indicador.sensores:
         mediciones = get_mediciones(
-            s.id, desde=request.desde, hasta=request.hasta)
+            s, desde=request.desde, hasta=request.hasta)
         resultados.append(IndicadorResult(
-            s.id, mediciones, unidad,request.unidad,s.nombre))
+            s, mediciones, unidad,request.unidad,s.nombre))
 
     return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad)
 

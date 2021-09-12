@@ -14,7 +14,7 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
     counts = []
 
     for sensor in indicador.sensores:
-        mediciones = get_mediciones(sensor.id,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
+        mediciones = get_mediciones(sensor,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
 
         count=0
 

@@ -13,9 +13,9 @@ def guardar_varias(mediciones: List[Medicion]):
     return [mongo_connector.insert(MedicionDocument.from_model(m)) for m in mediciones]
 
 
-def get_mediciones(sensor_id: str, count: int = None, sort: dict = None) -> List[Medicion]:
+def get_mediciones(mac: str, count: int = None, sort: dict = None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument).add_filter(
-        {"id_sensor": sensor_id})
+        {"id_sensor": mac})
     if count:
         query = query.page(0, count)
 
@@ -29,10 +29,10 @@ def get_mediciones(sensor_id: str, count: int = None, sort: dict = None) -> List
     return [Medicion.from_dict(r) for r in resultados]
 
 
-def get_mediciones_por_fechas(sensor_id: str, fecha_desde: datetime, fecha_hasta: datetime,sort=None) -> List[Medicion]:
+def get_mediciones_por_fechas(mac: str, fecha_desde: datetime, fecha_hasta: datetime,sort=None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument)
 
-    filter_id = {"id_sensor": sensor_id}
+    filter_id = {"MAC": mac}
 
     filter_fecha_desde = {
         "fecha": {
