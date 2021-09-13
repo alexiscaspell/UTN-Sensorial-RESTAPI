@@ -126,7 +126,7 @@ def mongo_to_python_type(field, data):
         return None
 
     if isinstance(field, DateTimeField):
-        return str(data.isoformat())
+        return field.to_python(data).isoformat()
     elif isinstance(field, (ComplexDateTimeField, DateTimeField)):
         return field.to_python(data).isoformat()
     elif isinstance(field, DictField):

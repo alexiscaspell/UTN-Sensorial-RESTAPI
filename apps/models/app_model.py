@@ -96,9 +96,11 @@ class AppModel(object):
 
     @classmethod
     def _format_parameter(cls, some_object, some_class):
-        if(isinstance(some_object,list)):
+        if some_object is None:
+            return None
+        elif(isinstance(some_object,list)):
             return [cls._format_parameter(e,some_class) for e in some_object]
-        if(isinstance(some_object,float)):
+        elif(issubclass(some_class,float)):
             return float(some_object)
         elif issubclass(some_class, AppModel):
             return some_class.from_dict(some_object)

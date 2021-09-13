@@ -3,6 +3,7 @@ from typing import Dict,List
 from apps.models.app_model import AppModel,model_metadata
 from apps.models.indicador import Indicador
 from enum import Enum
+from apps.models.exception import ObjetivoInvalidoException
 
 class ObjetivoStatus(Enum):
     pendiente = "pendiente"
@@ -16,7 +17,7 @@ class ObjetivoResult(AppModel):
         self.valor = result_spec.get("valor",None)
         self.valor_esperado = result_spec.get("valor_esperado",None)
 
-@model_metadata({"fecha_incial":datetime,"fecha_final":datetime})
+@model_metadata({"fecha_inicial":datetime,"fecha_final":datetime,"valor":float})
 class Objetivo(AppModel):
     def __init__(self, objetivo_spec: Dict):
         self.id = objetivo_spec.get("id", None)
@@ -31,5 +32,13 @@ class Objetivo(AppModel):
         self.valor = objetivo_spec.get("valor",None)
         self.funcion = None
 
-    def evaluar(self,params:List[object]):
-        raise NotImplementedError("Funcion evaluar no implementada")
+    def evaluar(self,valor:float)->ObjetivoStatus:
+        if self.valor is None:
+            raise ObjetivoInvalidoException(self.id)
+
+        status = ObjetivoStatus.cumplido if valor>=self.valor else ObjetivoStatus.pendiente
+
+        if datetime.now()> self.fecha_final and status==ObjetivoStatus.pendiente:
+            status = ObjetivoStatus.no_cumplido
+
+        return status

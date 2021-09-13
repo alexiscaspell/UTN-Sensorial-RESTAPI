@@ -34,9 +34,6 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
 
     valor = contador_total/max(mediciones_totales,1)*100
 
-    status = ObjetivoStatus.cumplido if valor>=float(objetivo.valor) else ObjetivoStatus.pendiente
-
-    if datetime.now()> objetivo.fecha_final and status==ObjetivoStatus.pendiente:
-        status = ObjetivoStatus.no_cumplido
+    status = objetivo.evaluar(valor)
 
     return ObjetivoResult.from_dict({"id_objetivo":id_objetivo,"status":status,"valor":valor,"valor_esperado":objetivo.valor})

@@ -63,8 +63,14 @@ class IndicadorNotFoundException(AppException):
     def __str__(self):
         return self.mensaje
 class ObjetivoNotFoundException(AppException):
-    def __init__(self,id_indicador=None):
-        super().__init__(409, f"Objetivo con id {id_indicador} no encontrado.")
+    def __init__(self,id_objetivo=None):
+        super().__init__(409, f"Objetivo con id {id_objetivo} no encontrado.")
+
+    def __str__(self):
+        return self.mensaje
+class ObjetivoInvalidoException(AppException):
+    def __init__(self,id_objetivo=None):
+        super().__init__(409, f"Objetivo con id {id_objetivo} invalido.")
 
     def __str__(self):
         return self.mensaje
