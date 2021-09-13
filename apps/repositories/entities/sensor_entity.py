@@ -8,7 +8,7 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
 
 
 class SensorDocument(Document, EasyDocument):
-    meta = {'collection': 'sensors'}
+    meta = {'collection': 'sensors','indexes': ['MAC']}
 
     id = ObjectIdField(db_field="_id",required=False)
     nombre = StringField(required=True)
