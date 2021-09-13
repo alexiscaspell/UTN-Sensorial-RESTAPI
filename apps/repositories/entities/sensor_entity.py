@@ -8,10 +8,13 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
 
 
 class SensorDocument(Document, EasyDocument):
-    meta = {'collection': 'sensores'}
+    meta = {'collection': 'sensors'}
 
+    id = ObjectIdField(db_field="_id",required=False)
     nombre = StringField(required=True)
     tipo = StringField(required=True)
+    MAC = StringField(required=False)
+
 
     @staticmethod
     def from_model(model: Sensor):

@@ -90,9 +90,9 @@ class MongoQueryBuilder:
         return self.mongo_query
 
 
-def insert(some_document):
+def insert(some_document,**params):
     try:
-        return some_document.save().id
+        return some_document.save(**params).id
     except Exception as e:
         logger.error(e)
         raise DatabaseException(f"Error al actualizar documento {some_document}.")

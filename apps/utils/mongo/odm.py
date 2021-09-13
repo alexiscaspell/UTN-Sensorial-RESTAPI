@@ -1,4 +1,5 @@
 from bson import ObjectId
+import json
 from typing import Dict, Iterable
 import pymongo
 from mongoengine import (Document, DateTimeField, ComplexDateTimeField,
@@ -22,16 +23,22 @@ class EasyDocument:
         '''Actualiza un documento de mongoengine a partir de su _id y un dict
         con los campos como las claves del diccionario y los valores se
         guardaran en la base'''
+        return cls.easy_update_one_by_key("id",ObjectId(id),document)
+
+    @classmethod
+    def easy_update_one_by_key(cls, key: str,value, document,args:dict={}) -> bool:
+        '''Actualiza un documento de mongoengine a partir de su key y un dict
+        con los campos como las claves del diccionario y los valores se
+        guardaran en la base'''
 
         dict_document = document
 
         if not isinstance(dict_document,dict):
             dict_document=mongo_to_dict(document,["_id"])
-            
-        return bool(cls.objects(id=ObjectId(id)).update_one(**dict(dict_document)))
-        # prueba_dioct = dict(document)
 
-        # return bool(cls.objects(id=ObjectId(id)).update_one(prueba_mongo))
+        dict_document.update(args)
+            
+        return bool(cls.objects(**{key:value}).update_one(**dict(dict_document)))
 
     @classmethod
     def easy_delete_by_id(cls, id: str):
@@ -70,6 +77,9 @@ class EasyDocument:
             logger.error(e)
             for e in []:
                 yield e
+
+    def to_dict(self):
+        return json.loads(self.to_json())
 
 def mongo_to_dict(obj, exclude_fields=[]):
     return_data = []
