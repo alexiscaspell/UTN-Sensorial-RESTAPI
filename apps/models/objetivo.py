@@ -13,6 +13,7 @@ class ObjetivoResult(AppModel):
     def __init__(self,result_spec):
         self.id_objetivo = result_spec["id_objetivo"]
         self.status = result_spec["status"]
+        self.valor = result_spec.get("valor",None)
 
 @model_metadata({"fecha_incial":datetime,"fecha_final":datetime})
 class Objetivo(AppModel):
