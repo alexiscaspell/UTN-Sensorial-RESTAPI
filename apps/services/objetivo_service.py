@@ -32,12 +32,11 @@ def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
         contador_total+=c["contador"]
         mediciones_totales+=c["mediciones"]
 
-    valor = contador_total/max(mediciones_totales,1)
+    valor = contador_total/max(mediciones_totales,1)*100
 
     status = ObjetivoStatus.cumplido if valor>=float(objetivo.valor) else ObjetivoStatus.pendiente
 
     if datetime.now()> objetivo.fecha_final and status==ObjetivoStatus.pendiente:
         status = ObjetivoStatus.no_cumplido
 
-
-    return ObjetivoResult.from_dict({"id_objetivo":id_objetivo,"status":status,"valor":valor})
+    return ObjetivoResult.from_dict({"id_objetivo":id_objetivo,"status":status,"valor":valor,"valor_esperado":objetivo.valor})

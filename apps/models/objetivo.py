@@ -14,6 +14,7 @@ class ObjetivoResult(AppModel):
         self.id_objetivo = result_spec["id_objetivo"]
         self.status = result_spec["status"]
         self.valor = result_spec.get("valor",None)
+        self.valor_esperado = result_spec.get("valor_esperado",None)
 
 @model_metadata({"fecha_incial":datetime,"fecha_final":datetime})
 class Objetivo(AppModel):

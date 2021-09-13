@@ -124,7 +124,7 @@ class Indicador(AppModel):
         self.sensores = indicador_spec["sensores"]
         self.tipo = indicador_spec["tipo"]
         self.limite_superior = indicador_spec.get("limite_superior", None)
-        self.limite_superior = indicador_spec.get("limite_inferior", None)
+        self.limite_inferior = indicador_spec.get("limite_inferior", None)
 
         self.parametros = indicador_spec.get("parametros", [])
         self.funcion = None
