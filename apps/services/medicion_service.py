@@ -11,7 +11,7 @@ from apps.repositories import sensor_repository as sensor_repository
 def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
     mediciones = [m.to_medicion() for m in mediciones_raspberry]
 
-    if conf.get(Vars.AUTOCREAR_SENSORES):
+    if conf.get(Vars.AUTOCREAR_SENSORES,tipo=bool):
         sensores = list(set(map(lambda m: Sensor.from_dict({"tipo":m.tipo_sensor,"MAC":m.MAC,"nombre":m.MAC}),mediciones)))
         sensor_repository.save_all(sensores)
 
