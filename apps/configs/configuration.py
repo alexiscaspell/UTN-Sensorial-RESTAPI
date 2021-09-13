@@ -9,7 +9,9 @@ def _get_mapa_variables():
     return getattr(mapa_variables, ENVIRONMENT_MODE)
 
 def _convertir_valor(valor:object,tipo):
-    if issubclass(tipo,str):
+    if tipo is None:
+        return valor
+    elif issubclass(tipo,str):
         return str(valor)
     elif issubclass(tipo,bool):
         return valor=="true" or valor==True
@@ -28,7 +30,7 @@ def get(variable,tipo=None):
     valor = os.environ.get(variable, None)
     
     if valor is None:
-        return os.environ.get(f"{APP_NAME}".upper()+f"_{variable}", _get_mapa_variables()[variable])
+        valor=os.environ.get(f"{APP_NAME}".upper()+f"_{variable}", _get_mapa_variables()[variable])
 
     return _convertir_valor(valor,tipo)
 
