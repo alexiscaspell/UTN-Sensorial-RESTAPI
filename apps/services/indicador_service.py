@@ -56,7 +56,7 @@ def get_indicador(id_tablero: str, id_indicador: str) -> Indicador:
     return tablero_repository.get_indicador(id_tablero, id_indicador)
 
 
-def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: TipoIndicador, unidad_tiempo: UnidadTiempo) -> List[IndicadorResult]:
+def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: TipoIndicador, unidad_tiempo: UnidadTiempo,promedio=True) -> List[IndicadorResult]:
     funcion = _get_funcion_groupby(unidad_tiempo)
     funcion_inversa = _get_inversa_funcion_groupby(unidad_tiempo)
 
@@ -71,7 +71,7 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
         b["f_order"] = b["f_order"].apply(funcion)
 
         b = b.groupby(by="f_order")
-        b = b.mean(numeric_only=False)
+        b = b.mean(numeric_only=False) if promedio else b.sum(numeric_only=False)
         b = b.reset_index()
 
         muestras_json = b.to_json(orient='records', date_format="iso")
@@ -97,7 +97,7 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
     return resultados
 
 
-def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[IndicadorResult]:
+def procesar_indicador_historico(request: IndicadorHistoricoRequest,promedio=True) -> List[IndicadorResult]:
     indicador: Indicador = get_indicador(request.id_tablero, request.id)
 
     resultados = []
@@ -111,7 +111,7 @@ def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[Ind
         resultados.append(IndicadorResult(
             s, mediciones, unidad,request.unidad,s.nombre))
 
-    return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad)
+    return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad,promedio=promedio)
 
 
 def procesar_indicador_produccion(indicador: Indicador, request: IndicadorRequest) -> List[IndicadorResult]:
@@ -122,7 +122,7 @@ def procesar_indicador_produccion(indicador: Indicador, request: IndicadorReques
         "desde": datetime.now()-timedelta(hours=request.muestras),
         "hasta": datetime.now(),
     })
-    return procesar_indicador_historico(request_historico)
+    return procesar_indicador_historico(request_historico,promedio=False)
 
 
 def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorResult]:
