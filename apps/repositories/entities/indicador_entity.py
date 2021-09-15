@@ -19,6 +19,8 @@ class SensorDocument(EmbeddedDocument, EasyDocument):
 
 
 class IndicadorDocument(EmbeddedDocument, EasyDocument):
+    meta = {"strict":False}
+    
     id = ObjectIdField(db_field="_id",required=True)
     nombre = StringField(db_field="name",required=True)
     sensores = EmbeddedDocumentListField(SensorDocument,db_field="sensors",required=True)
