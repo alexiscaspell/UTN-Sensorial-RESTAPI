@@ -9,37 +9,56 @@ from typing import Dict, List
 from apps.repositories import tablero_repository
 from apps.repositories import medicion_repository as mr
 import pandas as pd
+from isoweek import Week
 
 
-def get_mediciones(sensor: str, count=None, desde=None, hasta=None) -> List[Medicion]:
+def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
     if count is not None:
-        return mr.get_mediciones(sensor, count=count, sort={"fecha": "desc"})
+        return mr.get_mediciones(sensor.MAC, count=count, sort={"fecha": "desc"})
     else:
-        return mr.get_mediciones_por_fechas(sensor, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "asc"})
+        return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "desc"})
 
 
 def _get_funcion_groupby(unidad: UnidadTiempo):
 
-    if unidad == UnidadTiempo.hora:
-        def funcion(e): return (e.year, e.month, e.day, e.hour)
+    if unidad == UnidadTiempo.hora or unidad==UnidadTiempo.horas_minutos:
+        return lambda e: (e.year, e.month, e.day, e.hour)
     elif unidad == UnidadTiempo.dia:
-        def funcion(e): return (e.year, e.month, e.day)
+        return lambda e: (e.year, e.month, e.day)
     elif unidad == UnidadTiempo.semana:
-        def funcion(e): return e.isocalendar()[1]
+        return lambda e: (e.isocalendar()[0],e.isocalendar()[1])
     elif unidad == UnidadTiempo.mes:
-        def funcion(e): return (e.year, e.month)
+        return lambda e: (e.year, e.month)
     elif unidad == UnidadTiempo.anio:
-        def funcion(e): return e.year
+        return lambda e: e.year
 
-    return funcion
+    return None
+
+def _get_inversa_funcion_groupby(unidad: UnidadTiempo):
+
+    date_to_datetime = lambda e: datetime(e.year,e.month,e.day)
+
+    if unidad == UnidadTiempo.hora or unidad==UnidadTiempo.horas_minutos:
+        return lambda e: datetime(*e)
+    elif unidad == UnidadTiempo.dia:
+        return lambda e: datetime(*e)
+    elif unidad == UnidadTiempo.semana:
+        return lambda e: date_to_datetime(Week(e[0], e[1]).monday())
+    elif unidad == UnidadTiempo.mes:
+        return lambda e: datetime(*(e+[1]))
+    elif unidad == UnidadTiempo.anio:
+        return lambda e:  datetime(e,1,1)
+
+    return None
 
 
 def get_indicador(id_tablero: str, id_indicador: str) -> Indicador:
     return tablero_repository.get_indicador(id_tablero, id_indicador)
 
 
-def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: TipoIndicador, unidad_tiempo: UnidadTiempo) -> List[IndicadorResult]:
+def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: TipoIndicador, unidad_tiempo: UnidadTiempo,promedio=True) -> List[IndicadorResult]:
     funcion = _get_funcion_groupby(unidad_tiempo)
+    funcion_inversa = _get_inversa_funcion_groupby(unidad_tiempo)
 
     for r in resultados:
         if len(r.valores) == 0:
@@ -52,44 +71,58 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
         b["f_order"] = b["f_order"].apply(funcion)
 
         b = b.groupby(by="f_order")
-        b = b.mean(numeric_only=False)
+        b = b.mean(numeric_only=False) if promedio else b.sum(numeric_only=False)
+        b = b.reset_index()
 
         muestras_json = b.to_json(orient='records', date_format="iso")
+        muestras = json.loads(muestras_json)
+
+        for m in muestras:
+            m["fecha"] = m["f_order"]
+            m["fecha"] = funcion_inversa(m["fecha"])
+            # m["fecha"]=m["f_order"] if isinstance(m["f_order"],list) else [m["f_order"]]
+            # m.pop("f_order",None)
+
+            # if len(m["fecha"])<3:
+            #     for _ in range(3-len(m["fecha"])):
+            #         m["fecha"].append(1)
+
+            # m["fecha"]=datetime(*m["fecha"])
 
         base = r.valores[0].to_dict()
 
         r.valores = [Medicion.from_dict({**base, **e})
-                     for e in json.loads(muestras_json)]
+                     for e in muestras]
 
     return resultados
 
 
-def procesar_indicador_historico(request: IndicadorHistoricoRequest) -> List[IndicadorResult]:
+def procesar_indicador_historico(request: IndicadorHistoricoRequest,promedio=True) -> List[IndicadorResult]:
     indicador: Indicador = get_indicador(request.id_tablero, request.id)
 
     resultados = []
 
     unidad = UnidadValor.porcentaje if len(
-        indicador.id_sensores) > 1 else UnidadValor.absoluto
+        indicador.sensores) > 1 else UnidadValor.absoluto
 
-    for s in indicador.id_sensores:
+    for s in indicador.sensores:
         mediciones = get_mediciones(
             s, desde=request.desde, hasta=request.hasta)
         resultados.append(IndicadorResult(
-            s, mediciones, unidad))
+            s, mediciones, unidad,request.unidad,s.nombre))
 
-    return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad)
+    return _procesar_resultados(resultados, indicador.tipo, unidad_tiempo=request.unidad,promedio=promedio)
 
 
 def procesar_indicador_produccion(indicador: Indicador, request: IndicadorRequest) -> List[IndicadorResult]:
     request_historico = IndicadorHistoricoRequest({
         "id": request.id,
         "id_tablero": request.id_tablero,
-        "unidad": UnidadTiempo.hora,
+        "unidad": UnidadTiempo.horas_minutos,
         "desde": datetime.now()-timedelta(hours=request.muestras),
         "hasta": datetime.now(),
     })
-    return procesar_indicador_historico(request_historico)
+    return procesar_indicador_historico(request_historico,promedio=False)
 
 
 def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorResult]:
@@ -102,10 +135,12 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
     resultados = []
 
     unidad = UnidadValor.porcentaje if len(
-        indicador.id_sensores) > 1 else UnidadValor.absoluto
+        indicador.sensores) > 1 else UnidadValor.absoluto
 
-    for id_sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.id_sensores):
+    for sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.sensores):
+        id_sensor=sensor.id
+
         resultados.append(IndicadorResult(
-            id_sensor, mediciones, unidad))
+            id_sensor, mediciones, unidad,UnidadTiempo.horas_minutos,sensor.nombre))
 
     return resultados

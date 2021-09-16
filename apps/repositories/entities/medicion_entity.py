@@ -7,11 +7,11 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
 
 
 class MedicionDocument(Document, EasyDocument):
-    meta = {'collection': 'samples'}
+    meta = {'collection': 'samples','indexes': ['MAC']}
 
     valor = FloatField(required=True)
     unidad = StringField(required=False)
-    id_sensor = StringField(required=True)
+    MAC = StringField(required=True)
     tipo_sensor = StringField(required=True)
     fecha = DateTimeField(required=True)
 

@@ -16,8 +16,7 @@ def convert_to_case(cadena:str,case:Case):
 def _cast_to_datetime(value):
     converted_value = None
     possible_formats = ["%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%S.%f","%Y-%m-%d %H:%M:%S.%fZ",
-                        "%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", '%Y-%m-%d %H:%M:%S', "%Y-%m-%dT%H:%M:%SZ"]
-
+                        "%Y-%m-%d %H:%M:%S.%f","%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", '%Y-%m-%d %H:%M:%S', "%Y-%m-%dT%H:%M:%SZ"]
 
     for possible_format in possible_formats:
         try:
@@ -97,8 +96,12 @@ class AppModel(object):
 
     @classmethod
     def _format_parameter(cls, some_object, some_class):
-        if(isinstance(some_object,list)):
+        if some_object is None:
+            return None
+        elif(isinstance(some_object,list)):
             return [cls._format_parameter(e,some_class) for e in some_object]
+        elif(issubclass(some_class,float)):
+            return float(some_object)
         elif issubclass(some_class, AppModel):
             return some_class.from_dict(some_object)
         elif issubclass(some_class, Enum):

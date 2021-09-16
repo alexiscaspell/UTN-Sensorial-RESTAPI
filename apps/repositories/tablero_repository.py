@@ -1,3 +1,4 @@
+from apps.models.objetivo import Objetivo
 from typing import List
 
 from apps.models.indicador import Indicador
@@ -6,6 +7,7 @@ from apps.repositories.entities.tablero_entity import TableroDocument
 from apps.utils.mongo import mongo_connector
 from apps.utils.mongo.mongo_connector import MongoQueryBuilder, get_by_filter
 from bson import ObjectId
+from apps.models.exception import IndicadorNotFoundException,ObjetivoNotFoundException
 
 
 def _get_tableros():
@@ -35,8 +37,8 @@ def get_indicador(id: str, indicador_id: str) -> Indicador:
 
     result = mongo_connector.get_by_filter(query)
 
-    if result is None or len(result) == 0 or "indicadores" not in result[0]:
-        return None
+    if result is None or len(result) == 0 or len(result[0].get("indicadores"))==0:
+        raise IndicadorNotFoundException(indicador_id)
 
     indicador_result=None
 
@@ -49,3 +51,24 @@ def get_indicador(id: str, indicador_id: str) -> Indicador:
         return None
 
     return Indicador.from_dict(indicador_result)
+
+def get_objetivo(id: str, objetivo_id: str) -> Objetivo:
+    query = MongoQueryBuilder(TableroDocument).add_id_filter(id).build()
+    # query = MongoQueryBuilder(TableroDocument).add_id_filter(id).add_id_filter({"indicadores":indicador_id}).add_slice_field("indicadores", 0, 1).build()
+
+    result = mongo_connector.get_by_filter(query)
+
+    if result is None or len(result) == 0 or len(result[0].get("objetivos"))==0:
+        raise ObjetivoNotFoundException(objetivo_id)
+
+    objetivo_result=None
+
+    for i in result[0]["objetivos"]:
+        if i["id"]==objetivo_id:
+            objetivo_result = i
+            break
+
+    if objetivo_result is None:
+        return None
+
+    return Objetivo.from_dict(objetivo_result)

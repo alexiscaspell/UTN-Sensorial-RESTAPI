@@ -8,3 +8,4 @@ class Sensor(AppModel):
         self.id = sensor_spec.get("id", None)
         self.nombre = sensor_spec["nombre"]
         self.tipo = sensor_spec["tipo"]
+        self.MAC = sensor_spec.get("MAC",None)

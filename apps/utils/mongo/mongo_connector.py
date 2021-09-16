@@ -9,6 +9,7 @@ from mongoengine import (BooleanField, DateTimeField, DictField, Document,
                          StringField, connect)
 from mongoengine.errors import NotUniqueError, ValidationError
 from apps.utils.mongo.odm import EasyDocument
+from apps.models.exception import DatabaseException
 
 logger = get_logger("MongoConnector")
 
@@ -89,8 +90,12 @@ class MongoQueryBuilder:
         return self.mongo_query
 
 
-def insert(some_document):
-    return some_document.save().id
+def insert(some_document,**params):
+    try:
+        return some_document.save(**params).id
+    except Exception as e:
+        logger.error(e)
+        raise DatabaseException(f"Error al actualizar documento {some_document}.")
 
 
 def update(some_document, dict_document: Dict = None):
@@ -98,21 +103,28 @@ def update(some_document, dict_document: Dict = None):
     if not dict_document:
         dict_document = some_document
 
-    some_document.easy_update_one(some_document.id, dict_document)
+    try:
+        some_document.easy_update_one(some_document.id, dict_document)
+    except Exception as e:
+        logger.error(e)
+        raise DatabaseException(f"Error al actualizar documento {some_document}.")
 
 
 def get_by_filter(query: MongoQuery) -> List[Dict]:
+    try:
 
-    offset = (query.page_number - 1) * \
-        query.items_per_page if query.page_number and query.items_per_page else 0
+        offset = (query.page_number - 1) * \
+            query.items_per_page if query.page_number and query.items_per_page else 0
 
-    elems = []
+        elems = []
 
-    for o in query.collection.easy_get_documents(skip=offset, limit=query.items_per_page, filters=query.filters, exclude_fields=query.exclude_fields, slice_fields=query.slice_fields,sort=query.sort):
-        elems.append(o)
+        for o in query.collection.easy_get_documents(skip=offset, limit=query.items_per_page, filters=query.filters, exclude_fields=query.exclude_fields, slice_fields=query.slice_fields,sort=query.sort):
+            elems.append(o)
 
-    return elems
-
+        return elems
+    except Exception as e:
+        logger.error(e)
+        raise DatabaseException(f"Error al obtener objetos de collection {query.collection}.")
 
 def get_by_id(document_class: Document, id: str) -> Dict:
     '''Retorna un diccionario con el documento perteneciente a id'''

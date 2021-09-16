@@ -10,7 +10,7 @@ class Medicion(AppModel):
     def __init__(self, medicion_spec: Dict):
         self.id = medicion_spec.get("id", None)
         self.valor = medicion_spec["valor"]
-        self.id_sensor = medicion_spec["id_sensor"]
+        self.MAC = medicion_spec["MAC"]
         self.tipo_sensor = medicion_spec["tipo_sensor"]
         self.unidad = medicion_spec.get("unidad", None)
         self.fecha = medicion_spec.get("fecha", datetime.now())
@@ -33,7 +33,7 @@ class MedicionRaspberry(AppModel):
     def to_medicion(self) -> Medicion:
         return Medicion.from_dict({
             "valor": self.value,
-            "id_sensor": self.mac,
+            "MAC": self.mac,
             "tipo_sensor": self.sensor_type,
             "unidad": self.unit,
             "fecha": self.creation_date
