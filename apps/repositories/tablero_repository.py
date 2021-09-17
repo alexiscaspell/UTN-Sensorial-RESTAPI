@@ -48,7 +48,7 @@ def get_indicador(id: str, indicador_id: str) -> Indicador:
             break
 
     if indicador_result is None:
-        return None
+        raise IndicadorNotFoundException(indicador_id)
 
     return Indicador.from_dict(indicador_result)
 
