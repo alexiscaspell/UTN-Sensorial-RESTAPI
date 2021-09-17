@@ -35,8 +35,10 @@ class Objetivo(AppModel):
     def evaluar(self,valor:float)->ObjetivoStatus:
         if self.valor is None:
             raise ObjetivoInvalidoException(self.id)
+        
+        fecha_actual=datetime.now()
 
-        status = ObjetivoStatus.cumplido if valor>=self.valor else ObjetivoStatus.pendiente
+        status = ObjetivoStatus.cumplido if valor>=self.valor and fecha_actual>self.fecha_final else ObjetivoStatus.pendiente
 
         if datetime.now()> self.fecha_final and status==ObjetivoStatus.pendiente:
             status = ObjetivoStatus.no_cumplido
