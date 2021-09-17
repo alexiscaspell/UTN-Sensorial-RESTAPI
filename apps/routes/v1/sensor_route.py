@@ -19,7 +19,7 @@ blue_print = Blueprint(URI,
 
 @blue_print.route('', methods=['GET'])
 def get_all_sensores():
-    result = [s.to_dict() for s in sensores_service.get_all_sensores()]
+    result = [s.to_dict() for s in sensores_service.get_all()]
     return jsonify(result), HTTPStatus.OK
 
 @blue_print.route('', methods=['POST'])
