@@ -64,6 +64,8 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
         if len(r.valores) == 0:
             continue
 
+        r.reverse_valores=False #deshabilito el reverse de los valores en el json
+
         b = pd.DataFrame([e.to_dict() for e in r.valores])
 
         b["f_order"] = b["fecha"].apply(

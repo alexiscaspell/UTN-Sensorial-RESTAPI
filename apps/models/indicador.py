@@ -23,12 +23,13 @@ class UnidadTiempo(Enum):
 
 @model_metadata({"unidad": UnidadValor, "valores": Medicion, "unidad_tiempo": UnidadTiempo})
 class IndicadorResult(AppModel):
-    def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor, unidad_tiempo: UnidadTiempo = UnidadTiempo.horas_minutos, nombre_sensor=""):
+    def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor, unidad_tiempo: UnidadTiempo = UnidadTiempo.horas_minutos, nombre_sensor="",reverse_valores=True):
         self.id_sensor = id_sensor
         self.nombre_sensor = nombre_sensor
         self.valores = valores
         self.unidad = unidad
         self.unidad_tiempo = unidad_tiempo
+        self.reverse_valores=reverse_valores
 
     def _get_fecha_formateada(self, fecha: datetime):
         if self.unidad_tiempo == UnidadTiempo.hora:
@@ -47,7 +48,7 @@ class IndicadorResult(AppModel):
         return fecha
 
     def to_json(self):
-        valores = list(reversed(self.valores))
+        valores = list(reversed(self.valores)) if self.reverse_valores else list(self.valores)
         result = {
             "nombre_sensor": self.nombre_sensor,
             "unidad": self.unidad.value,

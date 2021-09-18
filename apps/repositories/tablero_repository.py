@@ -32,17 +32,17 @@ def get_all() -> List[Tablero]:
 
 
 def get_indicador(id: str, indicador_id: str) -> Indicador:
-    query = MongoQueryBuilder(TableroDocument).add_id_filter(id).build()
+    # query = MongoQueryBuilder(TableroDocument).add_id_filter(id).build()
     # query = MongoQueryBuilder(TableroDocument).add_id_filter(id).add_id_filter({"indicadores":indicador_id}).add_slice_field("indicadores", 0, 1).build()
 
-    result = mongo_connector.get_by_filter(query)
+    result = mongo_connector.get_by_id(TableroDocument,id)
 
-    if result is None or len(result) == 0 or len(result[0].get("indicadores"))==0:
+    if result is None or len(result.get("indicadores"))==0:
         raise IndicadorNotFoundException(indicador_id)
 
     indicador_result=None
 
-    for i in result[0]["indicadores"]:
+    for i in result["indicadores"]:
         if i["id"]==indicador_id:
             indicador_result = i
             break
