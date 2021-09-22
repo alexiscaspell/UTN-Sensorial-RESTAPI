@@ -4,7 +4,9 @@ from apps.models.sensor import Sensor
 from apps.repositories.entities.sensor_entity import SensorDocument
 from apps.utils.mongo import mongo_connector
 from apps.utils.mongo.mongo_connector import MongoQueryBuilder
+from apps.utils.logger_util import get_logger
 
+logger = get_logger()
 
 def _get_sensores():
     try:
@@ -16,7 +18,8 @@ def _get_sensores():
             return []
 
         return [Sensor.from_dict(r) for r in resultados]
-    except Exception as _:
+    except Exception as e:
+        logger.exception(e)
         pass
 
     return []
