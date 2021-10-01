@@ -9,6 +9,7 @@ class ObjetivoStatus(Enum):
     pendiente = "pendiente"
     no_cumplido = "no_cumplido"
     cumplido = "cumplido"
+    
 @model_metadata({"status":ObjetivoStatus})
 class ObjetivoResult(AppModel):
     def __init__(self,result_spec):
@@ -16,6 +17,12 @@ class ObjetivoResult(AppModel):
         self.status = result_spec["status"]
         self.valor = result_spec.get("valor",None)
         self.valor_esperado = result_spec.get("valor_esperado",None)
+
+    def to_dict(self):
+        result = super().to_dict()
+        result["valor"]=round(result["valor"],2)
+        result["valor_esperado"]=round(result["valor_esperado"],2)
+        return result
 
 @model_metadata({"fecha_inicial":datetime,"fecha_final":datetime,"valor":float})
 class Objetivo(AppModel):

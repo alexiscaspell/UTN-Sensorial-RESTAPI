@@ -17,7 +17,7 @@ class Medicion(AppModel):
 
     def to_json(self):
         result = super().to_dict()
-        return {"valor": result["valor"], "fecha": result["fecha"]}
+        return {"valor": round(result["valor"],2), "fecha": result["fecha"]}
 
 
 @model_metadata({})

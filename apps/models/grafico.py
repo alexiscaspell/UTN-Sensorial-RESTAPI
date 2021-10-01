@@ -31,7 +31,7 @@ class GraficoObjetivo(Grafico):
         objetivo=data[0]
         objetivo_result=data[1]
 
-        self.resultado = objetivo_result.valor
+        self.resultado = [objetivo_result.valor,objetivo_result.valor_esperado]
         self.nombre = objetivo.nombre
 
         return self.resultado
@@ -39,14 +39,34 @@ class GraficoObjetivo(Grafico):
     def generar_grafico(self):
 
         _, ax = plt.subplots(subplot_kw=dict(aspect="equal"))
+        explode = [0.1,0.1] 
 
-        etiquetas = ['Obtenido', 'Restante']
-        porcentajes = [self.resultado, 100-self.resultado]
+        etiquetas = ['Obtenido', 'Necesario']
+        porcentajes = [self.resultado[0],self.resultado[1]]
+
+        colors = []
+
+        red='#EC2647'
+        blue='#2F9ED5'
+        green='#19CE1F'
+        orange='#E47327'
+
+        if self.resultado[0]>=self.resultado[1]:
+            colors.append(green)
+        else:
+            colors.append(red)
+
+        colors.append(orange)
+
+        if sum(self.resultado)<=100:
+            etiquetas.append("Restante")
+            porcentajes.append(100-sum(self.resultado))
+            explode.append(0)
+            colors.append(blue)
 
         def func(pct, allvals):
             return f"{pct:3.2f}%"
 
-        explode = (0.1, 0) 
         wedges, _, _ = ax.pie(porcentajes,explode=explode ,autopct=lambda pct: func(pct, porcentajes),
                                           textprops=dict(color="w"),shadow=True,startangle=45,wedgeprops={"edgecolor": "0", 'linewidth': 1})
 
