@@ -1,3 +1,4 @@
+from apps.utils.logger_util import get_logger
 from typing import List
 import apps.configs.configuration as conf
 from apps.configs.vars import Vars
@@ -9,7 +10,9 @@ from apps.repositories import sensor_repository as sensor_repository
 from datetime import datetime
 from datetime import timedelta
 import random
+import threading
 
+logger = get_logger(__name__)
 
 def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
     mediciones = [m.to_medicion() for m in mediciones_raspberry]
@@ -37,7 +40,6 @@ def _valor_medicion_random(sensor_type: str,anterior=None,variacion=0.15) -> int
     return anterior * (1 + ((-1)**random.randint(0,2)) * random.uniform(0, variacion))
 
 def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float=0.15,tipos=None):
-
     tipos = ['temperatura', 'humedad', 'calidad_del_aire', 'produccion'] if tipos is None else tipos
 
     sensor_types = {
@@ -92,4 +94,10 @@ def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float
 
             base_creation_date+=timedelta(milliseconds=step_milisegundos)
 
+    a = threading.Thread(target=_guardar_mediciones_async,args=[mediciones] , daemon=True)
+    a.start()
+
+def _guardar_mediciones_async(mediciones):
+    logger.info(f"Insertando {len(mediciones)} mediciones asincronamente")
     guardar_mediciones(mediciones)
+    logger.info(f"Insercion asincrona terminada.")
