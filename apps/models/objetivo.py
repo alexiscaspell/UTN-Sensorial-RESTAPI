@@ -32,6 +32,11 @@ class Objetivo(AppModel):
         self.valor = objetivo_spec.get("valor",None)
         self.funcion = None
 
+    def to_dict(self):
+        result = super().to_dict()
+        result.pop("funcion",None)
+        return result
+
     def evaluar(self,valor:float)->ObjetivoStatus:
         if self.valor is None:
             raise ObjetivoInvalidoException(self.id)

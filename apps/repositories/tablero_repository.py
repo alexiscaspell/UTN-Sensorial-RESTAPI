@@ -46,12 +46,11 @@ def add_reporte(id_tablero:str,reporte:Reporte)->Reporte:
     if result is None:
         raise TableroNotFoundException(id_tablero)
 
-    tablero = Tablero.from_dict(result)
     reporte.id = str(ObjectId())
 
-    tablero.reportes.append(reporte)
+    result["reportes"].append(reporte.to_dict())
 
-    TableroDocument.easy_update_one(id_tablero,tablero.to_dict())
+    TableroDocument.easy_update_one(id_tablero,result)
 
     return reporte
 

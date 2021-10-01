@@ -6,233 +6,473 @@
 	},
 	"item": [
 		{
-			"name": "obtener usuarios",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url-sensorial-back}}/api/v1/usuarios",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"usuarios"
-					]
+			"name": "indicadoresYobjetivos",
+			"item": [
+				{
+					"name": "calcular indicador historico",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"desde\":\"2021-07-17 06:32:01.659Z\",\n    \"hasta\":\"2021-11-17 06:32:01.659Z\",\n    \"granularidad\":1,\n    \"unidad\":\"mes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/indicadores/611840626fa7e70c878ef754/historico",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros",
+								"6118401a6fa7e70c878ef73a",
+								"indicadores",
+								"611840626fa7e70c878ef754",
+								"historico"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "calcular indicador",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muestras\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/indicadores/611840626fa7e70c878ef754/calculado",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros",
+								"6118401a6fa7e70c878ef73a",
+								"indicadores",
+								"611840626fa7e70c878ef754",
+								"calculado"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "calcular objetivo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros/612114bd9c356b1800eee3b5/objetivos/613e59f298b2f1b91f787d1d/calculado",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros",
+								"612114bd9c356b1800eee3b5",
+								"objetivos",
+								"613e59f298b2f1b91f787d1d",
+								"calculado"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "calcular indicador historico",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"desde\":\"2021-07-17 06:32:01.659Z\",\n    \"hasta\":\"2021-11-17 06:32:01.659Z\",\n    \"granularidad\":1,\n    \"unidad\":\"mes\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "tareas",
+			"item": [
+				{
+					"name": "AGREGAR TAREA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n        \"cron\": \"* * * * *\",\n        \"activa\":false,\n        \"receptores_estado\": [\n            {\n                \"activo\":false,\n                \"destinatarios\": [\n                    \"alexis.taberna@moorea.io\"\n                ],\n                \"en_copia\": [],\n                \"status\": \"ok\",\n                \"template\": {\n                    \"encabezado\": \"f'Proceso automatizado {args[0].month:02d} ({args[1]})'\",\n                    \"cuerpo\": \"f'Se ejecutaron correctamente los registros {args[2]} del mes {args[0].month:02d}'\"\n                }\n            }\n        ],\n        \"id\": \"otra_tarea\",\n        \"modulo_externo\": {\n            \"funcion\": \"tarea_de_prueba\",\n            \"modulo\": \"apps/services/funciones_service.py\",\n            \"argumentos\": [\n                \"'asd'\",\"'asd'\"\n            ]\n        }\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/indicadores/611840626fa7e70c878ef754/historico",
-					"host": [
-						"{{url-sensorial-back}}"
+				{
+					"name": "ACTUALIZAR TAREA",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cron\": \"0 9 18 * *\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas/informe_tareas_mensual",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas",
+								"informe_tareas_mensual"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBTENER TAREAS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CORRER TAREA",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas/informe_tareas_mensual/run",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas",
+								"informe_tareas_mensual",
+								"run"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BORRAR TAREA",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"id_tarea\", \"una_tarea\");"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"api",
-						"v1",
-						"tableros",
-						"6118401a6fa7e70c878ef73a",
-						"indicadores",
-						"611840626fa7e70c878ef754",
-						"historico"
-					]
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas/{{id_tarea}}",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas",
+								"{{id_tarea}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "calcular indicador",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"muestras\":2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "reportes",
+			"item": [
+				{
+					"name": "guardar reporte",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\":\"asd\",\n    \"destinatarios\":[\"utn.sensorial@gmail.com\"],\n    \"dia\":\"Miércoles\",\n    \"descripcion\":\"asdasddas\",\n    \"horario\":\"06:25\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/reportes",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros",
+								"6118401a6fa7e70c878ef73a",
+								"reportes"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/indicadores/611840626fa7e70c878ef754/calculado",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"tableros",
-						"6118401a6fa7e70c878ef73a",
-						"indicadores",
-						"611840626fa7e70c878ef754",
-						"calculado"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "obtener tableros",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"muestras\":2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "monitoreo",
+			"item": [
+				{
+					"name": "healthcheck",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muestras\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/alive",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"alive"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/api/v1/tableros",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"tableros"
-					]
+				{
+					"name": "obtener variables",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muestras\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/vars",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"vars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postman collection",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muestras\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/postman",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"postman"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "healthcheck",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"muestras\":2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "otros",
+			"item": [
+				{
+					"name": "obtener usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/usuarios",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/alive",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"alive"
-					]
+				{
+					"name": "obtener tableros",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muestras\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "guardar medicion",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.373576\"\n    },\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.922150\"\n    }\n]",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "mediciones",
+			"item": [
+				{
+					"name": "guardar medicion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.373576\"\n    },\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.922150\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/mediciones",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mediciones"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/api/v1/mediciones",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"mediciones"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postman collection",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"muestras\":2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "guardar mediciones mock",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cantidad\":20,\n    \"desde\":\"2021-08-30T22:30:10.000\",\n    \"hasta\":\"2021-09-01T01:30:10.000\",\n    \"variacion\":0.15,\n    \"tipos\":[\"temperatura\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/mediciones/mock",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mediciones",
+								"mock"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/postman",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"postman"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "obtener variables",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"muestras\":2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url-sensorial-back}}/vars",
-					"host": [
-						"{{url-sensorial-back}}"
-					],
-					"path": [
-						"vars"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request
-from apps.utils.rest_util import get_valid_rest_object,get_body
+from apps.utils.rest_util import get_body
 
 import apps.configs.configuration as conf
 from apps.configs.vars import Vars
@@ -40,6 +40,6 @@ def mock_mediciones():
     else:
         hasta=datetime.now()
 
-    medicion_service.hardcodear(body.get("cantidad",10), desde=desde, hasta=hasta, variacion=body.get("variacion",0.15))
+    medicion_service.hardcodear(body.get("cantidad",10), desde=desde, hasta=hasta, variacion=body.get("variacion",0.15),tipos=body.get("tipos",None))
 
     return '', 200
