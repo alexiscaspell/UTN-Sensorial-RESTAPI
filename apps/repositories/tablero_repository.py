@@ -2,34 +2,67 @@ from apps.models.objetivo import Objetivo
 from typing import List
 
 from apps.models.indicador import Indicador
+from apps.models.reporte import Reporte
 from apps.models.tablero import Tablero
 from apps.repositories.entities.tablero_entity import TableroDocument
 from apps.utils.mongo import mongo_connector
-from apps.utils.mongo.mongo_connector import MongoQueryBuilder, get_by_filter
+from apps.utils.mongo.mongo_connector import MongoQueryBuilder
 from bson import ObjectId
-from apps.models.exception import IndicadorNotFoundException,ObjetivoNotFoundException
+from apps.models.exception import IndicadorNotFoundException,ObjetivoNotFoundException,ReporteInvalidoException,TableroNotFoundException
 
 
 def _get_tableros():
-    # try:
 
     query = MongoQueryBuilder(
         TableroDocument).add_exclude_field("_id").add_exclude_field("__v").build()
+        
     resultados = mongo_connector.get_by_filter(query)
 
     if not resultados:
         return []
 
     return [Tablero.from_dict(r) for r in resultados]
-    # except Exception as _:
-    #     pass
-
-    return []
 
 
 def get_all() -> List[Tablero]:
     return _get_tableros()
 
+def get_tablero_by_reporte(id_reporte:str)->Tablero:
+    query = MongoQueryBuilder(
+        TableroDocument).add_exclude_field("_id").add_exclude_field("__v")
+
+    query.add_id_filter({"reportes":id_reporte})
+
+    result = mongo_connector.get_by_filter(query.build())
+
+    if result is None or len(result) == 0:
+        raise ReporteInvalidoException(id_reporte)
+
+    return Tablero.from_dict(result[0])
+
+def add_reporte(id_tablero:str,reporte:Reporte)->Reporte:
+    result = mongo_connector.get_by_id(TableroDocument,id_tablero)
+
+    if result is None:
+        raise TableroNotFoundException(id_tablero)
+
+    tablero = Tablero.from_dict(result)
+    reporte.id = str(ObjectId())
+
+    tablero.reportes.append(reporte)
+
+    TableroDocument.easy_update_one(id_tablero,tablero.to_dict())
+
+    return reporte
+
+
+def get_all_reportes()->List[Reporte]:
+    reportes=[]
+    
+    for t in get_all():
+        reportes+=t.reportes
+
+    return reportes
 
 def get_indicador(id: str, indicador_id: str) -> Indicador:
     # query = MongoQueryBuilder(TableroDocument).add_id_filter(id).build()

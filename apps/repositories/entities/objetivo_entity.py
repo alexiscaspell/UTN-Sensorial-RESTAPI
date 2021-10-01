@@ -7,7 +7,7 @@ from apps.utils.mongo.odm import EasyDocument
 
 
 class ObjetivoDocument(EmbeddedDocument, EasyDocument):
-    id = ObjectIdField(db_field="_id",required=True)
+    id = ObjectIdField(db_field="_id",required=False)
     nombre = StringField(db_field="name",required=True)
     decripcion = StringField(db_field="description",required=False)
     valor = StringField(db_field="value",required=True)

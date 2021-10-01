@@ -13,6 +13,8 @@ from flask_cors import CORS
 from apps.configs.vars import Vars
 import apps.configs.configuration as conf
 import certifi
+import apps.services.tasks_service as tasks_service
+
 
 app = Flask(__name__)
 app.register_blueprint(error_handler_bp)
@@ -23,6 +25,8 @@ logger = get_logger(__name__)
 
 connect(host=conf.get(Vars.MONGODB_URL),tlsCAFile=certifi.where())
 
+tasks_service.iniciar_proceso_automatico()
+tasks_service.cargar_reportes()
 
 if __name__ == '__main__':
 

@@ -18,6 +18,7 @@ class SensorTableroDocument(EmbeddedDocument, EasyDocument):
     def from_model(model: Sensor):
         document = SensorTableroDocument(**model.to_dict())
         return document
+
 class TableroDocument(Document, EasyDocument):
     meta = {'collection': 'dashboards',"strict":False}
 

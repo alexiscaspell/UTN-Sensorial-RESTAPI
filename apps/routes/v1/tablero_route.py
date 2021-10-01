@@ -4,7 +4,7 @@ from http import HTTPStatus
 from flask_cors import cross_origin
 
 from flask import Blueprint, jsonify, request
-from apps.utils.rest_util import get_valid_rest_object, get_body
+from apps.utils.rest_util import  get_body
 
 import apps.configs.configuration as conf
 from apps.configs.vars import Vars
@@ -12,6 +12,7 @@ import apps.services.indicador_service as indicador_service
 import apps.services.tablero_service as tablero_service
 import apps.services.objetivo_service as objetivo_service
 from apps.models.indicador import IndicadorResultList
+from apps.models.reporte import Reporte
 
 URI = "/tableros"
 VERSION = "/v1"
@@ -54,6 +55,14 @@ def calcular_indicador_historico(id_tablero: str, id_indicador: str):
         request_indicador)).to_json()
 
     return jsonify(result), HTTPStatus.OK
+
+@cross_origin()
+@blue_print.route('/<id_tablero>/reportes', methods=['POST'])
+def guardar_reporte(id_tablero: str):
+    body = get_body(request)
+    reporte = Reporte.from_dict(body)
+
+    return jsonify(tablero_service.guardar_reporte(id_tablero,reporte)), HTTPStatus.OK
 
 
 @blue_print.route('', methods=['GET'])

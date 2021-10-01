@@ -17,8 +17,11 @@ DEVELOPMENT = {
     "API_BASE_PATH": "/api",
     "LOG_LEVEL": DEBUG,
     "DIRECTORIO_LOGS": "logs/",
+    "DIRECTORIO_FILES": "files/",
     "AUTOCREAR_SENSORES": False,
     "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
+    "EMAIL_ENVIADOR": "un_email@gmail.com",
+    "EMAIL_PASS": "unapass",
     "ENV": ENVIRONMENT_MODE
 }
 PRODUCTION = {
@@ -29,7 +32,10 @@ PRODUCTION = {
     "LOG_LEVEL": INFO,
     "AUTOCREAR_SENSORES": False,
     "DIRECTORIO_LOGS": "logs/",
+    "DIRECTORIO_FILES": "files/",
     "MONGODB_URL": "mongodb+srv://prueba:prueba@localhost:27017/sensorial-db",
+    "EMAIL_ENVIADOR": "un_email@gmail.com",
+    "EMAIL_PASS": "unapass",
     "ENV": ENVIRONMENT_MODE
 }
 

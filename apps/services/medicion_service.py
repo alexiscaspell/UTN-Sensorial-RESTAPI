@@ -20,7 +20,23 @@ def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
 
     medicion_repository.guardar_varias(mediciones)
 
-def hardcodear(count: int, date_init: datetime, date_final: datetime, time_delta: int):
+def _valor_medicion_random(sensor_type: str,anterior=None,variacion=0.15) -> int:
+    if not anterior:
+        if sensor_type == 'temperatura':
+            anterior = random.randint(15, 35)
+
+        if sensor_type == 'humedad':
+            anterior = random.randint(50, 95)
+
+        if sensor_type == 'calidad_del_aire':
+            anterior = random.randint(50, 90)
+
+        if sensor_type == 'produccion':
+            anterior = random.randint(0, 2)
+
+    return anterior * (1 + (-1)**int(random.randint(0, variacion)))
+
+def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float=0.15):
 
     sensor_types = ['temperatura', 'humedad', 'calidad_del_aire', 'produccion']
 
@@ -45,66 +61,32 @@ def hardcodear(count: int, date_init: datetime, date_final: datetime, time_delta
 
     mediciones=[]
 
+    max_milisegundos = (hasta-desde).total_seconds()*1000
+    step_milisegundos = int(max_milisegundos/cantidad)
+
     for sensor_type, conf in sensor_types.items():
         
-        base_creation_date = random_date(date_init, date_final, time_delta)
+        base_creation_date = desde
         
-        for mac in conf.get('macs'):
-            for n in range(0, count):
+        for _ in range(0, cantidad):
+            for i,mac in enumerate(conf.get('macs')):
+                indice_anterior=len(mediciones)-i-len(conf.get('macs')-1)
+                anterior = mediciones[indice_anterior].value if indice_anterior>=0 else None
 
-                value = random_value(sensor_type)
-                creation_date = base_creation_date + timedelta(milliseconds=random.randint(1, 418969))
+                valor = _valor_medicion_random(sensor_type,anterior,variacion)
+
+                fecha = base_creation_date + timedelta(milliseconds=random.randint(0,step_milisegundos))
 
                 m = MedicionRaspberry.from_dict(
                     {"mac":mac,
                     "sensor_type":sensor_type,
-                    "value":value,
+                    "value":valor,
                     "unit":conf.get('unit'),
-                    "creation_date":creation_date}
+                    "creation_date":fecha}
                 )
 
                 mediciones.append(m)
 
+            base_creation_date+=timedelta(milliseconds=step_milisegundos)
+
     guardar_mediciones(mediciones)
-
-
-def random_value(sensor_type: str) -> int:
-
-    if sensor_type == 'temperatura':
-        return random.randint(15, 35)
-
-    if sensor_type == 'humedad':
-        return random.randint(50, 95)
-
-    if sensor_type == 'calidad_del_aire':
-        return random.randint(50, 90)
-
-    if sensor_type == 'produccion':
-        return random.randint(0, 2)
-
-
-def random_date(date_init: datetime = None, date_final: datetime = None, time_delta: int = None):
-
-    if time_delta and date_init and date_final:
-
-        while True:
-            date_result = _random_date(time_delta)
-            if date_init < date_result < date_final:
-                return date_result
-
-    if date_init and date_final:
-        time_rnd = date_init.timestamp() + random.random() * (date_final.timestamp() -
-                                                              date_init.timestamp())
-        time_rnd += (random.randint(0, 60) + random.randint(0, 60) *
-                     60 + random.randint(0, 60) * 3600)
-        return datetime.fromtimestamp(time_rnd)
-
-    return datetime.now() + (timedelta(minutes=20 * random.random()) * (-1)**int(random.randint(1, 2)))
-
-
-def _random_date(time_delta: int):
-    cte = 10
-    time_rnd = random.randint(1, cte) * time_delta * 1000
-
-    time_add = timedelta(milliseconds=time_rnd)
-    return datetime.now() + time_add * (-1)**(random.randint(1, 2))

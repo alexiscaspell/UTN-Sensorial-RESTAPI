@@ -25,29 +25,21 @@ def post_mediciones():
 
     return jsonify(medicion_service.guardar_mediciones(mediciones)), HTTPStatus.CREATED
 
-@blue_print.route('/mock', methods=['GET'])
+@blue_print.route('/mock', methods=['POST'])
 def mock_mediciones():
+    body = get_body(request)
 
-    count = int(request.args.get('count', 3))
-    date_init = request.args.get('date_init')
-    date_final = request.args.get('date_final')
-    time_delta = request.args.get('time_delta')
+    if "desde" in body:
+        desde = datetime.fromisoformat(body["desde"])
+    else:
+        desde=datetime.now()
+        desde.month-=1
 
-    if date_init:
-        date_init = datetime.fromisoformat(date_init)
+    if "hasta" in body:
+        hasta = datetime.fromisoformat(body["hasta"])
+    else:
+        hasta=datetime.now()
 
-    if date_final:
-        date_final = datetime.fromisoformat(date_final)
-
-    if time_delta == 'minutes':
-        time_delta = 60
-
-    if time_delta == 'hours':
-        time_delta = 60 ** 2
-
-    if time_delta == 'days':
-        time_delta = 24 * 60 ** 2
-
-    medicion_service.hardcodear(count, date_init, date_final, time_delta)
+    medicion_service.hardcodear(body.get("cantidad",10), desde=desde, hasta=hasta, variacion=body.get("variacion",0.15))
 
     return '', 200

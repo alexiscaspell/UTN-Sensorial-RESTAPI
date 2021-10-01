@@ -56,21 +56,35 @@ class DatabaseException(AppException):
 
     def __str__(self):
         return self.mensaje
+
 class IndicadorNotFoundException(AppException):
     def __init__(self,id_indicador=None):
         super().__init__(409, f"Indicador con id {id_indicador} no encontrado.")
 
+class TableroNotFoundException(AppException):
+    def __init__(self,id_tablero=None):
+        super().__init__(409, f"Tablero con id {id_tablero} no encontrado.")
+
     def __str__(self):
         return self.mensaje
+
 class ObjetivoNotFoundException(AppException):
     def __init__(self,id_objetivo=None):
         super().__init__(409, f"Objetivo con id {id_objetivo} no encontrado.")
 
     def __str__(self):
         return self.mensaje
+        
 class ObjetivoInvalidoException(AppException):
     def __init__(self,id_objetivo=None):
         super().__init__(409, f"Objetivo con id {id_objetivo} invalido.")
+
+    def __str__(self):
+        return self.mensaje
+
+class ReporteInvalidoException(AppException):
+    def __init__(self,id_reporte=None):
+        super().__init__(409, f"Reporte con id {id_reporte} invalido.")
 
     def __str__(self):
         return self.mensaje

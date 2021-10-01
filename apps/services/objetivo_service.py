@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, List
-from apps.models.objetivo import Objetivo,ObjetivoResult, ObjetivoStatus
+from apps.models.objetivo import Objetivo,ObjetivoResult
 from apps.repositories import tablero_repository
 from apps.services.indicador_service import get_mediciones,get_indicador
 
@@ -9,7 +9,12 @@ def get_objetivo(id_tablero,id_objetivo)->Objetivo:
 
 def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
     objetivo:Objetivo = get_objetivo(id_tablero, id_objetivo)
+
+    procesar_objetivo_actual(id_tablero,objetivo)
+
+def procesar_objetivo_actual(id_tablero:str,objetivo:Objetivo) -> ObjetivoResult:
     indicador = get_indicador(id_tablero,objetivo.id_indicador)
+    id_objetivo = objetivo.id
 
     counts = []
 

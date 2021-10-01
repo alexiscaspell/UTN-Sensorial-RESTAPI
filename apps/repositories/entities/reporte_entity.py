@@ -1,12 +1,11 @@
 from apps.models.reporte import Reporte
 from apps.utils.mongo.odm import EasyDocument
-from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
-                         EmbeddedDocumentField, EmbeddedDocumentListField,
-                         ListField, ObjectIdField, StringField)
+from mongoengine import (EmbeddedDocument, ListField,
+                         ObjectIdField, StringField)
 
 
 class ReporteDocument(EmbeddedDocument, EasyDocument):
-    id = ObjectIdField(db_field="_id",required=True)
+    id = ObjectIdField(db_field="_id", required=False)
     destinatarios = ListField(required=True)
     nombre = StringField(required=True)
     descripcion = StringField(required=False)

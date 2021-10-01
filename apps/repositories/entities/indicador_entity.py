@@ -7,7 +7,7 @@ from mongoengine import (DateTimeField, Document, EmbeddedDocument, DictField,
 from apps.utils.mongo.odm import EasyDocument
 
 class SensorDocument(EmbeddedDocument, EasyDocument):
-    id = ObjectIdField(db_field="_id",required=True)
+    id = ObjectIdField(db_field="_id",required=False)
     nombre = StringField(required=True)
     tipo = StringField(required=True)
     MAC = StringField(required=False)

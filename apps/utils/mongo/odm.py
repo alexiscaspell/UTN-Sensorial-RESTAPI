@@ -74,6 +74,7 @@ class EasyDocument:
                 yield mongo_to_dict(elem, exclude_fields)
 
         except Exception as e:
+            logger.error(f"Error en get de {cls}")
             logger.error(e)
             for e in []:
                 yield e
