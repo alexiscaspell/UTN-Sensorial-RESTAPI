@@ -7,15 +7,15 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Tuple
 import os
-
-
 from apps.models.email import Email, Adjunto
+from apps.utils.logger_util import get_logger
 
 _SMT_TLS = True
 _SMT_LOGIN = True
 _SMT_HOST = 'smtp.gmail.com'
 _SMT_PORT = 587
 # _SMT_PORT = 465
+logger = get_logger(__name__)
 
 
 def enviar_email(email_a_enviar: Email):
@@ -25,11 +25,13 @@ def enviar_email(email_a_enviar: Email):
     server = smtplib.SMTP(_SMT_HOST, _SMT_PORT)
 
     if _SMT_TLS:
+        logger.info("USANDO TLS ...")
         server.ehlo()
         server.starttls()
         server.ehlo()
 
     if _SMT_LOGIN:
+        logger.info(f"LOGIN: {email_a_enviar.usuario}, {email_a_enviar.contrasenia} ...")
         server.login(email_a_enviar.usuario, email_a_enviar.contrasenia)
 
     destinatarios = email_a_enviar.para + email_a_enviar.copia

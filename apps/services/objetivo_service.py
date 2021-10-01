@@ -3,14 +3,25 @@ from typing import Dict, List
 from apps.models.objetivo import Objetivo,ObjetivoResult
 from apps.repositories import tablero_repository
 from apps.services.indicador_service import get_mediciones,get_indicador
+from apps.utils.logger_util import get_logger
+
+logger = get_logger(__name__)
 
 def get_objetivo(id_tablero,id_objetivo)->Objetivo:
     return tablero_repository.get_objetivo(id_tablero,id_objetivo)
 
 def procesar_objetivo(id_tablero:str,id_objetivo:str) -> ObjetivoResult:
+    logger.info(f"PROCESANDO OBJETIVO {id_tablero}/{id_objetivo} ...")
+
     objetivo:Objetivo = get_objetivo(id_tablero, id_objetivo)
 
-    procesar_objetivo_actual(id_tablero,objetivo)
+    objetivo_result = procesar_objetivo_actual(id_tablero,objetivo)
+
+    logger.info(f"RESULTADO: {objetivo_result.to_dict()}")
+
+    return objetivo_result
+
+
 
 def procesar_objetivo_actual(id_tablero:str,objetivo:Objetivo) -> ObjetivoResult:
     indicador = get_indicador(id_tablero,objetivo.id_indicador)

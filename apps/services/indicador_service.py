@@ -10,6 +10,9 @@ from apps.repositories import tablero_repository
 from apps.repositories import medicion_repository as mr
 import pandas as pd
 from isoweek import Week
+from apps.utils.logger_util import get_logger
+
+logger = get_logger(__name__)
 
 
 def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
@@ -97,6 +100,8 @@ def _procesar_resultados(resultados: List[IndicadorResult], tipo_indicador: Tipo
 
 
 def procesar_indicador_historico(request: IndicadorHistoricoRequest,promedio=True) -> List[IndicadorResult]:
+    logger.info(f"PROCESANDO HISTORICO {request.id_tablero},{request.id} (avg={promedio}) ...")
+
     indicador: Indicador = get_indicador(request.id_tablero, request.id)
 
     resultados = []
@@ -125,6 +130,8 @@ def procesar_indicador_produccion(indicador: Indicador, request: IndicadorReques
 
 
 def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorResult]:
+    logger.info(f"PROCESANDO INDICADOR {request_indicador.id_tablero},{request_indicador.id} (seeds={request_indicador.muestras}) ...")
+
     indicador: Indicador = tablero_repository.get_indicador(
         request_indicador.id_tablero, request_indicador.id)
 

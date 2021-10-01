@@ -15,6 +15,9 @@ import threading
 logger = get_logger(__name__)
 
 def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
+
+    logger.info(f"GUARDANDO {len(mediciones_raspberry)} MEDICIONES ...")
+    
     mediciones = [m.to_medicion() for m in mediciones_raspberry]
 
     if conf.get(Vars.AUTOCREAR_SENSORES,tipo=bool):
