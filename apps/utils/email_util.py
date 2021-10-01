@@ -6,9 +6,13 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Tuple
+import os
 
-from apps.models.email import Email
 
+from apps.models.email import Email, Adjunto
+
+_SMT_TLS = True
+_SMT_LOGIN = True
 _SMT_HOST = 'smtp.gmail.com'
 _SMT_PORT = 587
 # _SMT_PORT = 465
@@ -18,13 +22,15 @@ def enviar_email(email_a_enviar: Email):
     '''
     Envia el email
     '''
-    server = smtplib.SMTP(_SMT_HOST,_SMT_PORT)
-    
-    server.ehlo()
-    server.starttls()
-    server.ehlo()
-    
-    server.login(email_a_enviar.usuario, email_a_enviar.contrasenia)
+    server = smtplib.SMTP(_SMT_HOST, _SMT_PORT)
+
+    if _SMT_TLS:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+
+    if _SMT_LOGIN:
+        server.login(email_a_enviar.usuario, email_a_enviar.contrasenia)
 
     destinatarios = email_a_enviar.para + email_a_enviar.copia
     text = _preparar_email(email_a_enviar)
@@ -53,12 +59,15 @@ def _preparar_email(email_a_enviar: Email) -> str:
     return message.as_string()
 
 
-def _preparar_adjuntos(adjuntos: List[Tuple[str, bytes]]) -> List[MIMEBase]:
+def _preparar_adjuntos(adjuntos: List[Adjunto]) -> List[MIMEBase]:
     '''
     Prepara los adjuntos para el enviador de emails
     '''
+
     resultado = []
-    for adjunto in adjuntos:
+    adjuntos_raw = [a.raw() for a in adjuntos]
+
+    for adjunto in adjuntos_raw:
 
         nombre = adjunto[0]
         contenido = adjunto[1]

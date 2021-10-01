@@ -34,8 +34,8 @@ class Reporte(AppModel):
                     "encabezado": "f'Reporte "+self.nombre+" {args[0].day:02d}/{args[0].month:02d}'",
                     "cuerpo": "f'Por la presente se envia el reporte "+self.nombre+" a la fecha de {args[0].day:02d}/{args[0].month:02d}/{args[0].year:02d}'",
                     "adjuntos": [
-                        "(f'"+self.nombre +
-                          "_{args[0].day:02d}_{args[0].month:02d}.zip',args[2])"
+                        "(f'"+''.join(self.nombre.split()) +
+                          "_{args[0].day:02d}_{args[0].month:02d}.pdf',args[2])"
                     ]
                 },
                 "activo": True
