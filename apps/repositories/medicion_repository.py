@@ -29,25 +29,32 @@ def get_mediciones(mac: str, count: int = None, sort: dict = None) -> List[Medic
     return [Medicion.from_dict(r) for r in resultados]
 
 
-def get_mediciones_por_fechas(mac: str, fecha_desde: datetime, fecha_hasta: datetime,sort=None) -> List[Medicion]:
+def get_mediciones_por_fechas(mac: str, fecha_desde: datetime=None, fecha_hasta: datetime=None,sort=None,count=None) -> List[Medicion]:
     query = MongoQueryBuilder(MedicionDocument)
+
+    if count:
+        query = query.page(0, count)
 
     filter_id = {"MAC": mac}
 
-    filter_fecha_desde = {
-        "fecha": {
-            "$gt": fecha_desde
-        }
-    }
+    filters = [filter_id]
 
-    filter_fecha_hasta = {
-        "fecha": {
-            "$lt": fecha_hasta
+    if fecha_desde:
+        filter_fecha_desde = {
+            "fecha": {
+                "$gt": fecha_desde
+            }
         }
-    }
+        filters.append(filter_fecha_desde)
+    if fecha_hasta:
+        filter_fecha_hasta = {
+            "fecha": {
+                "$lt": fecha_hasta
+            }
+        }
+        filters.append(filter_fecha_hasta)
 
-    query.filters(
-        {"$and": [filter_id, filter_fecha_desde, filter_fecha_hasta]})
+    query.filters({"$and": filters})
 
     if sort:
         query = query.sort_by(sort)

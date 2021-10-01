@@ -13,10 +13,7 @@ from isoweek import Week
 
 
 def get_mediciones(sensor: Sensor, count=None, desde=None, hasta=None) -> List[Medicion]:
-    if count is not None:
-        return mr.get_mediciones(sensor.MAC, count=count, sort={"fecha": "desc"})
-    else:
-        return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "desc"})
+    return mr.get_mediciones_por_fechas(sensor.MAC, fecha_desde=desde, fecha_hasta=hasta, sort={"fecha": "desc"},count=count)
 
 
 def _get_funcion_groupby(unidad: UnidadTiempo):
@@ -139,7 +136,9 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
     unidad = UnidadValor.porcentaje if len(
         indicador.sensores) > 1 else UnidadValor.absoluto
 
-    for sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras)), indicador.sensores):
+    fecha_hasta = datetime.now()
+
+    for sensor, mediciones in map(lambda s: (s, get_mediciones(s, count=request_indicador.muestras,hasta=fecha_hasta)), indicador.sensores):
         id_sensor=sensor.id
 
         resultados.append(IndicadorResult(
