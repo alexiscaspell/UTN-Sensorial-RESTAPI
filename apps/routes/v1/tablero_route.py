@@ -62,7 +62,7 @@ def guardar_reporte(id_tablero: str):
     body = get_body(request)
     reporte = Reporte.from_dict(body)
 
-    return jsonify(tablero_service.guardar_reporte(id_tablero,reporte)), HTTPStatus.OK
+    return jsonify(tablero_service.guardar_reporte(id_tablero,reporte).to_dict()), HTTPStatus.OK
 
 
 @blue_print.route('', methods=['GET'])
