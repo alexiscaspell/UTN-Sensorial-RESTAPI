@@ -62,6 +62,7 @@ def hardcodear(count: int, date_init: datetime, date_final: datetime, time_delta
                     "unit":conf.get('unit'),
                     "creation_date":creation_date}
                 )
+
                 mediciones.append(m)
 
     guardar_mediciones(mediciones)

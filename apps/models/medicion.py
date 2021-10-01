@@ -27,7 +27,7 @@ class MedicionRaspberry(AppModel):
         self.mac = medicion_spec["mac"]
         self.unit = medicion_spec["unit"]
         self.sensor_type = medicion_spec["sensor_type"]
-        self.raspberry_uuid = medicion_spec["raspberry_uuid"]
+        self.raspberry_uuid = medicion_spec.get("raspberry_uuid",None)
         self.value = medicion_spec["value"]
 
     def to_medicion(self) -> Medicion:
