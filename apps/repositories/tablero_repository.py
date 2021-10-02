@@ -118,7 +118,7 @@ def get_objetivo(id: str, objetivo_id: str) -> Objetivo:
 def delete_reporte(id_tablero:str,id_reporte:str):
     result = _get_by_id(id_tablero)
 
-    reportes = list(filter(lambda r:r!=id_reporte,result["reportes"]))
+    reportes = list(filter(lambda r:r['id']!=id_reporte,result["reportes"]))
 
     result["reportes"] = reportes
 

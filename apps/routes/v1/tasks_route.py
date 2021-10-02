@@ -56,7 +56,7 @@ def delete_tarea_programada(id_tarea):
 def delete_all():
     body = get_body(request)
 
-    conservar = str(body.get("conservar","false"))=="true"
+    conservar = str(body.get("conservar","false")).lower()=="true"
 
     ids_tareas = [e.id for e in tasks_service.get_tareas()]
 
@@ -67,3 +67,4 @@ def delete_all():
             tasks_service.eliminar_tarea(id_tarea)
 
     return jsonify({}),HTTPStatus.OK
+
