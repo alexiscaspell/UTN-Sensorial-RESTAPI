@@ -51,9 +51,9 @@ def _tablero_to_pdf(tablero: Tablero) -> bytes:
 
     objetivo_result_dummy = ObjetivoResult.from_dict({
         "id_objetivo": "dummy",
-        "status": cumplidos/totales >= objetivo_dummy.objetivo if ObjetivoStatus.cumplido else ObjetivoStatus.no_cumplido,
+        "status": cumplidos/totales >= objetivo_dummy.valor if ObjetivoStatus.cumplido else ObjetivoStatus.no_cumplido,
         "valor": cumplidos/totales,
-        "valor_esperado": objetivo_dummy.objetivo
+        "valor_esperado": objetivo_dummy.valor
     })
 
     path_graficos.append(_procesar_grafico_objetivo(objetivo_dummy,objetivo_result_dummy,path_graficos).get_path_completo())
