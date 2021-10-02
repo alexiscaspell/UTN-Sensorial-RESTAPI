@@ -40,11 +40,21 @@ def get_tablero_by_reporte(id_reporte:str)->Tablero:
 
     return Tablero.from_dict(result[0])
 
-def add_reporte(id_tablero:str,reporte:Reporte)->Reporte:
+def _get_by_id(id_tablero:str)->dict:
     result = mongo_connector.get_by_id(TableroDocument,id_tablero)
 
     if result is None:
         raise TableroNotFoundException(id_tablero)
+
+    return result
+    
+def get_by_id(id:str)->Tablero:
+    r=_get_by_id(id)
+    return Tablero.from_dict(r)
+
+
+def add_reporte(id_tablero:str,reporte:Reporte)->Reporte:
+    result = _get_by_id(id_tablero)
 
     reporte.id = str(ObjectId())
 
@@ -104,3 +114,13 @@ def get_objetivo(id: str, objetivo_id: str) -> Objetivo:
         return None
 
     return Objetivo.from_dict(objetivo_result)
+
+def delete_reporte(id_tablero:str,id_reporte:str):
+    result = _get_by_id(id_tablero)
+
+    reportes = list(filter(lambda r:r!=id_reporte,result["reportes"]))
+
+    result["reportes"] = reportes
+
+    TableroDocument.easy_update_one(id_tablero,result)
+

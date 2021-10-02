@@ -107,7 +107,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "  {\n        \"cron\": \"* * * * *\",\n        \"activa\":false,\n        \"receptores_estado\": [\n            {\n                \"activo\":false,\n                \"destinatarios\": [\n                    \"alexis.taberna@moorea.io\"\n                ],\n                \"en_copia\": [],\n                \"status\": \"ok\",\n                \"template\": {\n                    \"encabezado\": \"f'Proceso automatizado {args[0].month:02d} ({args[1]})'\",\n                    \"cuerpo\": \"f'Se ejecutaron correctamente los registros {args[2]} del mes {args[0].month:02d}'\"\n                }\n            }\n        ],\n        \"id\": \"otra_tarea\",\n        \"modulo_externo\": {\n            \"funcion\": \"tarea_de_prueba\",\n            \"modulo\": \"apps/services/funciones_service.py\",\n            \"argumentos\": [\n                \"'asd'\",\"'asd'\"\n            ]\n        }\n    }",
+							"raw": "  {\n        \"cron\": \"* * * * *\",\n        \"activa\":false,\n        \"receptores_estado\": [\n            {\n                \"activo\":false,\n                \"destinatarios\": [\n                    \"alexis.taberna@moorea.io\"\n                ],\n                \"en_copia\": [],\n                \"status\": \"ok\",\n                \"template\": {\n                    \"encabezado\": \"f'Proceso automatizado {args[0].month:02d} ({args[1]})'\",\n                    \"cuerpo\": \"f'Se ejecutaron correctamente los registros {args[2]} del mes {args[0].month:02d}'\"\n                }\n            }\n        ],\n        \"id\": \"otra_tarea\",\n        \"modulo_externo\": {\n            \"funcion\": \"_reporte_dummy\",\n            \"modulo\": \"apps/services/reportes_service.py\",\n            \"argumentos\": [\n                \"'asd'\",\"'asd'\"\n            ]\n        }\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -227,6 +227,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "BORRAR TAREAS",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ids\":[\"tarea_inservible\"],\n    \"conservar\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tareas",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tareas"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -258,6 +297,28 @@
 								"tableros",
 								"6118401a6fa7e70c878ef73a",
 								"reportes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminar reporte",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-back}}/api/v1/tableros/6118401a6fa7e70c878ef73a/reportes/6118401a6fa7e70c878ef73a",
+							"host": [
+								"{{url-sensorial-back}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tableros",
+								"6118401a6fa7e70c878ef73a",
+								"reportes",
+								"6118401a6fa7e70c878ef73a"
 							]
 						}
 					},
@@ -328,21 +389,9 @@
 				},
 				{
 					"name": "postman collection",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"muestras\":2\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{url-sensorial-back}}/postman",
 							"host": [
@@ -450,7 +499,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cantidad\":20,\n    \"desde\":\"2021-08-30T22:30:10.000\",\n    \"hasta\":\"2021-09-01T01:30:10.000\",\n    \"variacion\":0.15,\n    \"tipos\":[\"temperatura\"]\n}",
+							"raw": "{\n    \"cantidad\":720,\n    \"desde\":\"2021-09-29T18:30:10.000\",\n    \"hasta\":\"2021-10-02T06:59:10.000\",\n    \"variacion\":0.05\n}",
 							"options": {
 								"raw": {
 									"language": "json"

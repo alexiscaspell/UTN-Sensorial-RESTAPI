@@ -51,3 +51,19 @@ def delete_tarea_programada(id_tarea):
     tasks_service.eliminar_tarea(id_tarea)
 
     return jsonify({}),HTTPStatus.OK
+
+@blue_print.route('', methods=['DELETE'])
+def delete_all():
+    body = get_body(request)
+
+    conservar = str(body.get("conservar","false"))=="true"
+
+    ids_tareas = [e.id for e in tasks_service.get_tareas()]
+
+    ids = body.get("ids",ids_tareas)
+
+    for id_tarea in ids_tareas:
+        if (id_tarea in ids and not conservar) or (id_tarea not in ids and conservar):
+            tasks_service.eliminar_tarea(id_tarea)
+
+    return jsonify({}),HTTPStatus.OK

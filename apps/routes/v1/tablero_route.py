@@ -57,12 +57,18 @@ def calcular_indicador_historico(id_tablero: str, id_indicador: str):
     return jsonify(result), HTTPStatus.OK
 
 @cross_origin()
+@blue_print.route('/<id_tablero>/reportes/<id_reporte>', methods=['DELETE'])
+def eliminar_reporte(id_tablero: str, id_reporte: str):
+    tablero_service.borrar_reporte(id_tablero,id_reporte)
+    return jsonify({}), HTTPStatus.OK
+
+@cross_origin()
 @blue_print.route('/<id_tablero>/reportes', methods=['POST'])
 def guardar_reporte(id_tablero: str):
     body = get_body(request)
     reporte = Reporte.from_dict(body)
 
-    return jsonify(tablero_service.guardar_reporte(id_tablero,reporte).to_dict()), HTTPStatus.OK
+    return jsonify(tablero_service.guardar_reporte(id_tablero,reporte).to_dict()), HTTPStatus.CREATED
 
 
 @blue_print.route('', methods=['GET'])
