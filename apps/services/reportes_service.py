@@ -46,17 +46,19 @@ def _tablero_to_pdf(tablero: Tablero) -> bytes:
         "nombre": "Objetivos totales",
         "id_indicador": "dummy",
         "nombre_indicador": "dummy",
-        "objetivo": 0.75
+        "valor": 75
     })
+
+    valor_actual=100*(cumplidos/totales)
 
     objetivo_result_dummy = ObjetivoResult.from_dict({
         "id_objetivo": "dummy",
-        "status": cumplidos/totales >= objetivo_dummy.valor if ObjetivoStatus.cumplido else ObjetivoStatus.no_cumplido,
-        "valor": cumplidos/totales,
+        "status": ObjetivoStatus.cumplido if valor_actual >= objetivo_dummy.valor else ObjetivoStatus.no_cumplido,
+        "valor": valor_actual,
         "valor_esperado": objetivo_dummy.valor
     })
 
-    path_graficos.append(_procesar_grafico_objetivo(objetivo_dummy,objetivo_result_dummy,path_graficos).get_path_completo())
+    paths_graficos.append(_procesar_grafico_objetivo(objetivo_dummy,objetivo_result_dummy,path_graficos).get_path_completo())
 
     path_pdf = f"files/mergedfilesoutput.pdf"
     merger = PdfFileMerger()
@@ -80,6 +82,8 @@ def _procesar_grafico_objetivo(objetivo: Objetivo, objetivo_result: ObjetivoResu
         "extension": "pdf",
         "nombre_archivo": fu.path_join(path_graficos, objetivo.nombre.strip())
     })
+
+    logger.info(f"CREANDO GRAFICO DE OBJETIVO {objetivo.id} (v={objetivo_result.valor},ve={objetivo.valor})")
 
     grafico.calcular([objetivo, objetivo_result])
     grafico.generar_grafico()

@@ -78,7 +78,7 @@ class GraficoObjetivo(Grafico):
                   loc="center left",
                   bbox_to_anchor=(1, 0, 0.5, 1))
 
-        plt.title(f"OBJETIVO {self.nombre.upper()}")
+        plt.title(f"{self.nombre.upper()}")
 
         plt.tight_layout()
 
