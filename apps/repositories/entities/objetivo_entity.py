@@ -14,7 +14,7 @@ class ObjetivoDocument(EmbeddedDocument, EasyDocument):
     fecha_inicial = DateTimeField(db_field="startDate",required=False)
     fecha_final = DateTimeField(db_field="endDate",required=False)
 
-    id_indicador = StringField(db_field="indicatorId",required=False)
+    id_indicador = StringField(db_field="indicatorId",required=True)
     nombre_indicador = StringField(db_field="indicatorName",required=False)
 
     @staticmethod

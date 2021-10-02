@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from apps.models.app_model import model_metadata
 from apps.models.app_model import AppModel,model_metadata
 from apps.models.objetivo import Objetivo,ObjetivoResult
+import numpy
 
 @model_metadata({})
 class Grafico(AppModel):
@@ -64,10 +65,12 @@ class GraficoObjetivo(Grafico):
             explode.append(0)
             colors.append(blue)
 
-        def func(pct, allvals):
-            return f"{pct:3.2f}%"
+        def func(val,allvals):
+            a  = allvals[ numpy.abs(allvals - val/100.*sum(allvals)).argmin() ]
+            return f"{a:3.2f}%"
 
-        wedges, _, _ = ax.pie(porcentajes,explode=explode ,autopct=lambda pct: func(pct, porcentajes),
+
+        wedges, _, _ = ax.pie(porcentajes,explode=explode ,colors=colors,autopct=lambda pct: func(pct, porcentajes),
                                           textprops=dict(color="w"),shadow=True,startangle=45,wedgeprops={"edgecolor": "0", 'linewidth': 1})
 
         ax.legend(wedges, etiquetas,
