@@ -6,15 +6,17 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Tuple
+from apps.configs.vars import Vars
+import apps.configs.configuration as conf
 import os
 from apps.models.email import Email, Adjunto
 from apps.utils.logger_util import get_logger
 
-_SMT_TLS = True
-_SMT_LOGIN = True
-_SMT_HOST = 'smtp.gmail.com'
-_SMT_PORT = 587
-# _SMT_PORT = 465
+_SMT_TLS = conf.get(Vars.SMTP_TLS,bool)
+_SMT_LOGIN = conf.get(Vars.SMTP_LOGIN,bool)
+_SMT_HOST = conf.get(Vars.SMTP_HOST)
+_SMT_PORT = conf.get(Vars.SMTP_PORT,int)
+
 logger = get_logger(__name__)
 
 
