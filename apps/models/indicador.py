@@ -33,7 +33,7 @@ class IndicadorResult(AppModel):
 
     def _get_fecha_formateada(self, fecha: datetime):
         if self.unidad_tiempo == UnidadTiempo.hora:
-            fecha = f"{fecha.day:02d} {fecha.hour:02d}"
+            fecha = f"{fecha.day:02d}-{fecha.month:02d} {fecha.hour:02d}hs"
         elif self.unidad_tiempo == UnidadTiempo.dia:
             fecha = f"{fecha.day:02d}-{fecha.month:02d}"
         elif self.unidad_tiempo == UnidadTiempo.semana:
