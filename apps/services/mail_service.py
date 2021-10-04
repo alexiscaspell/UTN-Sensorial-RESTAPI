@@ -27,7 +27,7 @@ def enviar_mail(receptor_estado:ReceptorDeEstado):
     cuerpo_html = receptor_estado.template.cuerpo_html
 
     email_a_enviar = Email.from_dict( {"de" : _EMAIL_ENVIADOR,
-                            "usuraio" : _SMTP_USER,
+                            "usuario" : _SMTP_USER,
                             "contrasenia" : _SMTP_PASS,
                             "para" : destinatarios,
                             "encabezado" : encabezado,
