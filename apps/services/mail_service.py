@@ -9,7 +9,8 @@ import apps.utils.email_util as email_util
 logger = get_logger(__name__)
 
 _EMAIL_ENVIADOR = conf.get(Vars.EMAIL_ENVIADOR)
-_EMAIL_PASS = conf.get(Vars.EMAIL_PASS)
+_SMTP_PASS = conf.get(Vars.SMTP_PASS)
+_SMTP_USER = conf.get(Vars.SMTP_USER)
 
 def enviar_mail(receptor_estado:ReceptorDeEstado):
     '''
@@ -26,7 +27,8 @@ def enviar_mail(receptor_estado:ReceptorDeEstado):
     cuerpo_html = receptor_estado.template.cuerpo_html
 
     email_a_enviar = Email.from_dict( {"de" : _EMAIL_ENVIADOR,
-                            "contrasenia" : _EMAIL_PASS,
+                            "usuraio" : _SMTP_USER,
+                            "contrasenia" : _SMTP_PASS,
                             "para" : destinatarios,
                             "encabezado" : encabezado,
                             "cuerpo" : cuerpo,
