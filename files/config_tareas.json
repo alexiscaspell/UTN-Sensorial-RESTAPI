@@ -1,0 +1,46 @@
+[
+    {
+        "cron": "* * * * *",
+        "receptores_estado": [
+            {
+                "status": "ok",
+                "destinatarios": [
+                    "utn.sensorial@gmail.com"
+                ],
+                "en_copia": [],
+                "template": {
+                    "encabezado": "f'Proceso automatizado {args[0].month:02d} ({args[1]})'",
+                    "cuerpo": "args[2]",
+                    "cuerpo_html": null,
+                    "adjuntos": [
+                        "('gandalf.gif',args[3])"
+                    ]
+                },
+                "activo": true
+            },
+            {
+                "status": "failed",
+                "destinatarios": [
+                    "utn.sensorial@gmail.com"
+                ],
+                "en_copia": [],
+                "template": {
+                    "encabezado": "f'Error en proceso automatizado'",
+                    "cuerpo": "f'Fallo de proceso debido a los \"siguientes registros fallidos: {args[2]}\"'",
+                    "cuerpo_html": null,
+                    "adjuntos": []
+                },
+                "activo": false
+            }
+        ],
+        "id": "tarea_inservible",
+        "modulo_externo": {
+            "modulo": "apps.services.reportes_service",
+            "funcion": "_reporte_dummy",
+            "argumentos": [
+                "'files/giphy.gif'"
+            ]
+        },
+        "activa": false
+    }
+]

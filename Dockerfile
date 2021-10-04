@@ -4,6 +4,7 @@ ARG TAG=local
 
 WORKDIR /usr/src/
 
+ENV TZ America/Argentina/Buenos_Aires
 
 # VARIABLES PREDEFINIDAS
 ENV SENSORIAL_RESTAPI_VERSION=${TAG}

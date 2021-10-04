@@ -10,3 +10,6 @@ stringcase
 pymongo[srv]
 mongoengine
 isoweek
+APScheduler
+matplotlib
+PyPDF2
