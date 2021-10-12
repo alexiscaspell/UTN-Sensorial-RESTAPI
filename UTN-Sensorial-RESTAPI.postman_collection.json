@@ -499,7 +499,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cantidad\":720,\n    \"desde\":\"2021-09-29T18:30:10.000\",\n    \"hasta\":\"2021-10-02T06:59:10.000\",\n    \"variacion\":0.05\n}",
+							"raw": "{\n    \"periodo\":3,\n    \"cantidad\":2,\n    \"desde\":\"2021-10-12T12:43:10.000\",\n    \"hasta\":\"2021-10-12T13:00:10.000\",\n    \"variacion\":0.15\n}",
 							"options": {
 								"raw": {
 									"language": "json"
