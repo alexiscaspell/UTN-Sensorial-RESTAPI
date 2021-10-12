@@ -108,7 +108,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
                     mediciones[mac]) > 0 else None
 
                 valor = _valor_medicion_random(
-                    sensor_type, anterior, variacion,limites,limites_activo)
+                    sensor_type, anterior, variacion,limites[sensor_type],limites_activo)
 
                 fecha = base_creation_date + \
                     timedelta(milliseconds=random.randint(
