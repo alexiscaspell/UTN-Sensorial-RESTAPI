@@ -46,17 +46,16 @@ class EasyDocument:
         return cls.objects(id=ObjectId(id)).delete()
 
     @classmethod
-    def easy_get_documents(cls, skip: int = 0, limit: int = 50, filters: Dict = {}, exclude_fields=[],slice_fields=None,sort=None) -> Iterable[Dict]:
+    def easy_get_documents(cls, skip: int = 0, limit: int = None, filters: Dict = {}, exclude_fields=[],slice_fields=None,sort=None) -> Iterable[Dict]:
         '''Devuelve objetos de mongo'''
 
         skip = skip if skip else 0
-        limit = limit if limit else 50
         filters = filters if filters else {}
 
 
         try:
             default_query = cls.objects(__raw__=filters)
-            mongo_query = default_query[skip:skip+limit]
+            mongo_query = default_query[skip:skip+limit] if limit else default_query
             
             # mongo_query = cls.objects(__raw__=filters)[skip:skip+limit]
 
