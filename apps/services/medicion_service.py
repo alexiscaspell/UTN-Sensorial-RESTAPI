@@ -39,7 +39,10 @@ def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limi
     anterior = anterior * (1 + ((-1)**random.randint(0, 2))
                            * random.uniform(0, variacion))
 
-    return max(min(anterior, maximo), minimo)
+    anterior = min(anterior,maximo)
+    anterior = max(anterior,minimo)
+
+    return anterior
 
 
 def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=None, cantidad: int = None, periodo=None, limites=None):
@@ -86,7 +89,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
 
     step_milisegundos = int(max_milisegundos/cantidad)
 
-    logger.info(f"HARDCODEANDO {cantidad*len(tipos)} MEDICIONES ...")
+    logger.info(f"HARDCODEANDO {cantidad}*{sum([len(sensor_types[t]['macs']) for t in tipos])} MEDICIONES ...")
     logger.info(f"TIPOS A HARDCODEAR: {tipos}")
 
     for sensor_type, conf in sensor_types.items():
