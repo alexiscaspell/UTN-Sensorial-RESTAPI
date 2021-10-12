@@ -101,11 +101,13 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float=0.15,tipos=Non
                     "creation_date":fecha}
                 )
 
-                mediciones.append(m)
+                mediciones[mac].append(m)
 
             base_creation_date+=timedelta(milliseconds=step_milisegundos)
 
-    mediciones = list(reversed(sum(mediciones.values(),[])))
+    reverse = datetime.now()>desde
+    mediciones=sum(mediciones.values(),[])
+    mediciones = list(reversed(mediciones) if reverse else mediciones)
 
     a = threading.Thread(target=_guardar_mediciones_async,args=[mediciones] , daemon=True)
     a.start()
