@@ -86,8 +86,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float=0.15,tipos=Non
         
         for _ in range(0, cantidad):
             for i,mac in enumerate(conf.get('macs')):
-                indice_anterior = len(mediciones[mac])-1
-                anterior = mediciones[indice_anterior].value if indice_anterior>=0 else None
+                anterior = mediciones[mac][-1].value if len(mediciones[mac])>0 else None
 
                 valor = _valor_medicion_random(sensor_type,anterior,variacion)
 
