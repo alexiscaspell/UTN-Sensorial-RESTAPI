@@ -29,7 +29,7 @@ def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
     medicion_repository.guardar_varias(mediciones)
 
 
-def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limites=[0, 0]) -> int:
+def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limites=[0, 0],limites_activo=False) -> int:
     minimo = limites[0]
     maximo = limites[1]
 
@@ -39,8 +39,9 @@ def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limi
     anterior = anterior * (1 + ((-1)**random.randint(0, 2))
                            * random.uniform(0, variacion))
 
-    anterior = min(anterior,maximo)
-    anterior = max(anterior,minimo)
+    if limites_activo:
+        anterior = min(anterior,maximo)
+        anterior = max(anterior,minimo)
 
     return anterior
 
@@ -67,6 +68,8 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
             'unit': 'bool'
         }
     }
+
+    limites_activo= limites is not None
 
     if not limites:
         limites = {
@@ -105,7 +108,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
                     mediciones[mac]) > 0 else None
 
                 valor = _valor_medicion_random(
-                    sensor_type, anterior, variacion)
+                    sensor_type, anterior, variacion,limites,limites_activo)
 
                 fecha = base_creation_date + \
                     timedelta(milliseconds=random.randint(
@@ -124,6 +127,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
             base_creation_date += timedelta(milliseconds=step_milisegundos)
 
     reverse = datetime.now() > desde
+
     mediciones = sum(mediciones.values(), [])
     mediciones = list(reversed(mediciones) if reverse else mediciones)
 
