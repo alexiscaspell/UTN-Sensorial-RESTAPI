@@ -59,7 +59,7 @@ class GraficoObjetivo(Grafico):
 
         colors.append(orange)
 
-        if sum(self.resultado)<=100:
+        if sum(self.resultado)<100:
             etiquetas.append("Restante")
             porcentajes.append(100-sum(self.resultado))
             explode.append(0)

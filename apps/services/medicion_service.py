@@ -42,7 +42,7 @@ def _valor_medicion_random(sensor_type: str,anterior=None,variacion=0.15) -> int
 
     return anterior * (1 + ((-1)**random.randint(0,2)) * random.uniform(0, variacion))
 
-def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float=0.15,tipos=None):
+def hardcodear(desde: datetime, hasta: datetime, variacion: float=0.15,tipos=None,cantidad: int=None,periodo=None):
     tipos = ['temperatura', 'humedad', 'calidad_del_aire', 'produccion'] if tipos is None else tipos
 
     sensor_types = {
@@ -64,9 +64,17 @@ def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float
         }
     }
 
-    mediciones=[]
+    mediciones={}
+
+    for _, conf in sensor_types.items():
+        for mac in conf.get('macs'):
+            mediciones.update({mac:[]})
 
     max_milisegundos = (hasta-desde).total_seconds()*1000
+
+    if cantidad is None and periodo is not None:
+        cantidad = int(max_milisegundos/(max(periodo,1)*1000))
+
     step_milisegundos = int(max_milisegundos/cantidad)
 
     for sensor_type, conf in sensor_types.items():
@@ -78,7 +86,7 @@ def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float
         
         for _ in range(0, cantidad):
             for i,mac in enumerate(conf.get('macs')):
-                indice_anterior = len(mediciones)-i-len(conf.get('macs'))-1
+                indice_anterior = len(mediciones[mac])-1
                 anterior = mediciones[indice_anterior].value if indice_anterior>=0 else None
 
                 valor = _valor_medicion_random(sensor_type,anterior,variacion)
@@ -96,6 +104,8 @@ def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float
                 mediciones.append(m)
 
             base_creation_date+=timedelta(milliseconds=step_milisegundos)
+
+    mediciones = list(reversed(sum(mediciones.values(),[])))
 
     a = threading.Thread(target=_guardar_mediciones_async,args=[mediciones] , daemon=True)
     a.start()

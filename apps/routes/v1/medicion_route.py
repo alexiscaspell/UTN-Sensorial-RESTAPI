@@ -30,16 +30,16 @@ def mock_mediciones():
     body = get_body(request)
 
     if "desde" in body:
-        desde = datetime.fromisoformat(body["desde"])
+        body["desde"] = datetime.fromisoformat(body["desde"])
     else:
-        desde=datetime.now()
-        desde.month-=1
+        body["desde"]=datetime.now()
+        body["desde"].month-=1
 
     if "hasta" in body:
-        hasta = datetime.fromisoformat(body["hasta"])
+        body["hasta"] = datetime.fromisoformat(body["hasta"])
     else:
-        hasta=datetime.now()
+        body["hasta"]=datetime.now()
 
-    medicion_service.hardcodear(body.get("cantidad",10), desde=desde, hasta=hasta, variacion=body.get("variacion",0.15),tipos=body.get("tipos",None))
+    medicion_service.hardcodear(**body)
 
     return '', 200
