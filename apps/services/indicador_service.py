@@ -123,7 +123,7 @@ def procesar_indicador_produccion(indicador: Indicador, request: IndicadorReques
         "id": request.id,
         "id_tablero": request.id_tablero,
         "unidad": UnidadTiempo.horas_minutos,
-        "desde": datetime.now()-timedelta(hours=request.muestras),
+        "desde": datetime.now()-timedelta(minutes=max((request.muestras-1)*60,1)),
         "hasta": datetime.now(),
     })
     return procesar_indicador_historico(request_historico,promedio=False)
