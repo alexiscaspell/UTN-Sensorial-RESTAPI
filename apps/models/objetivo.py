@@ -45,10 +45,10 @@ class Objetivo(AppModel):
         result.pop("funcion",None)
         return result
 
-    def to_bson():
+    def to_bson(self):
         result = super().to_dict()
-        result["valor"] = str(round(result["valor"],2)) if result["valor"] is not None else None
-        result["valor_calculado"] = str(round(result["valor"],2)) if result["valor_calculado"] is not None else None
+        result["valor"] = str(round(float(result["valor"]),2)) if result.get("valor") is not None else None
+        result["valor_calculado"] = str(round(float(result["valor"]),2)) if result.get("valor_calculado") is not None else None
 
         return result
 
