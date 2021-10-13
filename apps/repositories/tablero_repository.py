@@ -69,7 +69,14 @@ def add_reporte(id_tablero: str, reporte: Reporte) -> Reporte:
     TableroDocument.easy_update_one(id_tablero, result)
 
     return reporte
+def save_objetivo(id_tablero:str,objetivo:Objetivo):
+    result = _get_by_id(id_tablero)
 
+    for i,o in enumerate(result["objetivos"]):
+        if o["id"] == objetivo.id:
+            result["objetivos"][i] = objetivo.to_dict()
+
+    TableroDocument.easy_update_one(id_tablero, result)
 
 def get_all_reportes() -> List[Reporte]:
     reportes = []

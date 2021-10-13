@@ -11,6 +11,7 @@ class ObjetivoDocument(EmbeddedDocument, EasyDocument):
     nombre = StringField(db_field="name",required=True)
     descripcion = StringField(db_field="description",required=False)
     valor = StringField(db_field="value",required=True)
+    valor_calculado = StringField(db_field="calculated_value",required=True)
     fecha_inicial = DateTimeField(db_field="startDate",required=False)
     fecha_final = DateTimeField(db_field="endDate",required=False)
 

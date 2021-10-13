@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, List
-from apps.models.objetivo import Objetivo,ObjetivoResult
+from apps.models.objetivo import Objetivo,ObjetivoResult, ObjetivoStatus
 from apps.repositories import tablero_repository
 from apps.services.indicador_service import get_mediciones,get_indicador
 from apps.utils.logger_util import get_logger
@@ -27,29 +27,36 @@ def procesar_objetivo_actual(id_tablero:str,objetivo:Objetivo) -> ObjetivoResult
     indicador = get_indicador(id_tablero,objetivo.id_indicador)
     id_objetivo = objetivo.id
 
-    counts = []
+    valor = objetivo.valor_calculado
 
-    for sensor in indicador.sensores:
-        mediciones = get_mediciones(sensor,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
+    if valor is None:
+        counts = []
 
-        count=0
+        for sensor in indicador.sensores:
+            mediciones = get_mediciones(sensor,desde=objetivo.fecha_inicial, hasta=objetivo.fecha_final)
 
-        for m in mediciones:
-            if m.valor<= indicador.limite_superior:
-                if indicador.limite_inferior is None or m.valor>=indicador.limite_inferior:
-                    count+=1 
+            count=0
 
-        counts.append({"sensor":sensor.id,"contador":count,"mediciones":len(mediciones)})
+            for m in mediciones:
+                if m.valor<= indicador.limite_superior:
+                    if indicador.limite_inferior is None or m.valor>=indicador.limite_inferior:
+                        count+=1 
 
-    mediciones_totales=0
-    contador_total=0
+            counts.append({"sensor":sensor.id,"contador":count,"mediciones":len(mediciones)})
 
-    for c in counts:
-        contador_total+=c["contador"]
-        mediciones_totales+=c["mediciones"]
+        mediciones_totales=0
+        contador_total=0
 
-    valor = contador_total/max(mediciones_totales,1)*100
+        for c in counts:
+            contador_total+=c["contador"]
+            mediciones_totales+=c["mediciones"]
+
+        valor = contador_total/max(mediciones_totales,1)*100
 
     status = objetivo.evaluar(valor)
+
+    if status!=ObjetivoStatus.pendiente:
+        objetivo.valor_calculado = valor
+        tablero_repository.save_objetivo(id_tablero,objetivo)
 
     return ObjetivoResult.from_dict({"id_objetivo":id_objetivo,"status":status,"valor":valor,"valor_esperado":objetivo.valor})
