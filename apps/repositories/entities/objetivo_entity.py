@@ -7,11 +7,13 @@ from apps.utils.mongo.odm import EasyDocument
 
 
 class ObjetivoDocument(EmbeddedDocument, EasyDocument):
+    meta = {"strict":False}
+    
     id = ObjectIdField(db_field="_id",required=False)
     nombre = StringField(db_field="name",required=True)
     descripcion = StringField(db_field="description",required=False)
     valor = StringField(db_field="value",required=True)
-    valor_calculado = StringField(db_field="calculated_value",required=True)
+    valor_calculado = StringField(db_field="calculated_value",required=False)
     fecha_inicial = DateTimeField(db_field="startDate",required=False)
     fecha_final = DateTimeField(db_field="endDate",required=False)
 
