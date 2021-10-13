@@ -151,4 +151,10 @@ def procesar_indicador(request_indicador: IndicadorRequest) -> List[IndicadorRes
         resultados.append(IndicadorResult(
             id_sensor, mediciones, unidad,UnidadTiempo.horas_minutos,sensor.nombre))
 
+    fechas = list(map(lambda v:v.fecha,resultados[0].valores))
+
+    for r in resultados:
+        for i,v in enumerate(r.valores):
+            v.fecha = fechas[i]
+
     return resultados
