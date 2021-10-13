@@ -74,7 +74,7 @@ def save_objetivo(id_tablero:str,objetivo:Objetivo):
 
     for i,o in enumerate(result["objetivos"]):
         if o["id"] == objetivo.id:
-            result["objetivos"][i] = objetivo.to_dict()
+            result["objetivos"][i] = objetivo.to_bson()
 
     TableroDocument.easy_update_one(id_tablero, result)
 

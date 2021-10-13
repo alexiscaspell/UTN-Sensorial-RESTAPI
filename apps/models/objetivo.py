@@ -45,6 +45,14 @@ class Objetivo(AppModel):
         result.pop("funcion",None)
         return result
 
+    def to_bson():
+        result = super().to_dict()
+        result["valor"] = str(round(result["valor"],2)) if result["valor"] is not None else None
+        result["valor_calculado"] = str(round(result["valor"],2)) if result["valor_calculado"] is not None else None
+
+
+
+
     def evaluar(self,valor:float)->ObjetivoStatus:
         if self.valor is None:
             raise ObjetivoInvalidoException(self.id)
