@@ -59,9 +59,9 @@ class GraficoObjetivo(Grafico):
 
         colors.append(orange)
 
-        if sum(self.resultado)<=100:
+        if self.resultado[0]<100:
             etiquetas.append("Restante")
-            porcentajes.append(100-sum(self.resultado))
+            porcentajes.append(100-self.resultado[0])
             explode.append(0)
             colors.append(blue)
 
@@ -71,7 +71,7 @@ class GraficoObjetivo(Grafico):
 
 
         wedges, _, _ = ax.pie(porcentajes,explode=explode ,colors=colors,autopct=lambda pct: func(pct, porcentajes),
-                                          textprops=dict(color="w"),shadow=True,startangle=45,wedgeprops={"edgecolor": "0", 'linewidth': 1})
+                                          textprops=dict(color="w",backgroundcolor="k"),shadow=True,startangle=45,wedgeprops={"edgecolor": "0", 'linewidth': 1})
 
         ax.legend(wedges, etiquetas,
                   title="Porcentaje",

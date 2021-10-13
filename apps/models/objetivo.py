@@ -24,7 +24,7 @@ class ObjetivoResult(AppModel):
         result["valor_esperado"]=round(result["valor_esperado"],2)
         return result
 
-@model_metadata({"fecha_inicial":datetime,"fecha_final":datetime,"valor":float})
+@model_metadata({"fecha_inicial":datetime,"fecha_final":datetime,"valor":float,"valor_calculado":float})
 class Objetivo(AppModel):
     def __init__(self, objetivo_spec: Dict):
         self.id = objetivo_spec.get("id", None)
@@ -37,12 +37,23 @@ class Objetivo(AppModel):
         self.nombre_indicador = objetivo_spec["nombre_indicador"]
 
         self.valor = objetivo_spec.get("valor",None)
+        self.valor_calculado = objetivo_spec.get("valor_calculado",None)
         self.funcion = None
 
     def to_dict(self):
         result = super().to_dict()
         result.pop("funcion",None)
         return result
+
+    def to_bson(self):
+        result = super().to_dict()
+        result["valor"] = str(round(float(result["valor"]),2)) if result.get("valor") is not None else None
+        result["valor_calculado"] = str(round(float(result["valor_calculado"]),2)) if result.get("valor_calculado") is not None else None
+
+        return result
+
+
+
 
     def evaluar(self,valor:float)->ObjetivoStatus:
         if self.valor is None:

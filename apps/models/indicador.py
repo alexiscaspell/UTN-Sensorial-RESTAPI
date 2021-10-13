@@ -23,7 +23,7 @@ class UnidadTiempo(Enum):
 
 @model_metadata({"unidad": UnidadValor, "valores": Medicion, "unidad_tiempo": UnidadTiempo})
 class IndicadorResult(AppModel):
-    def __init__(self, id_sensor: str, valores: List[float], unidad: UnidadValor, unidad_tiempo: UnidadTiempo = UnidadTiempo.horas_minutos, nombre_sensor="",reverse_valores=True):
+    def __init__(self, id_sensor: str, valores: List[Medicion], unidad: UnidadValor, unidad_tiempo: UnidadTiempo = UnidadTiempo.horas_minutos, nombre_sensor="",reverse_valores=True):
         self.id_sensor = id_sensor
         self.nombre_sensor = nombre_sensor
         self.valores = valores

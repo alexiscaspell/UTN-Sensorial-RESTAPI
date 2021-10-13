@@ -14,36 +14,41 @@ import threading
 
 logger = get_logger(__name__)
 
+
 def guardar_mediciones(mediciones_raspberry: List[MedicionRaspberry]):
 
     logger.info(f"GUARDANDO {len(mediciones_raspberry)} MEDICIONES ...")
-    
+
     mediciones = [m.to_medicion() for m in mediciones_raspberry]
 
-    if conf.get(Vars.AUTOCREAR_SENSORES,tipo=bool):
-        sensores = list(set(map(lambda m: Sensor.from_dict({"tipo":m.tipo_sensor,"MAC":m.MAC,"nombre":m.MAC}),mediciones)))
+    if conf.get(Vars.AUTOCREAR_SENSORES, tipo=bool):
+        sensores = list(set(map(lambda m: Sensor.from_dict(
+            {"tipo": m.tipo_sensor, "MAC": m.MAC, "nombre": m.MAC}), mediciones)))
         sensor_repository.save_all(sensores)
 
     medicion_repository.guardar_varias(mediciones)
 
-def _valor_medicion_random(sensor_type: str,anterior=None,variacion=0.15) -> int:
+
+def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limites=[0, 0],limites_activo=False) -> int:
+    minimo = limites[0]
+    maximo = limites[1]
+
     if not anterior:
-        if sensor_type == 'temperatura':
-            anterior = random.randint(15, 35)
+        anterior = random.randint(minimo, maximo)
 
-        if sensor_type == 'humedad':
-            anterior = random.randint(50, 95)
+    anterior = anterior * (1 + ((-1)**random.randint(0, 2))
+                           * random.uniform(0, variacion))
 
-        if sensor_type == 'calidad_del_aire':
-            anterior = random.randint(50, 90)
+    if limites_activo:
+        anterior = min(anterior,maximo)
+        anterior = max(anterior,minimo)
 
-        if sensor_type == 'produccion':
-            anterior = random.randint(0, 2)
+    return anterior
 
-    return anterior * (1 + ((-1)**random.randint(0,2)) * random.uniform(0, variacion))
 
-def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float=0.15,tipos=None):
-    tipos = ['temperatura', 'humedad', 'calidad_del_aire', 'produccion'] if tipos is None else tipos
+def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=None, cantidad: int = None, periodo=None, limites=None):
+    tipos = ['temperatura', 'humedad', 'calidad_del_aire',
+             'produccion'] if tipos is None else tipos
 
     sensor_types = {
         'temperatura': {
@@ -64,43 +69,76 @@ def hardcodear(cantidad: int, desde: datetime, hasta: datetime, variacion: float
         }
     }
 
-    mediciones=[]
+    limites_activo= limites is not None
+
+    if not limites:
+        limites = {
+            "temperatura": [15, 35],
+            "humedad": [50, 95],
+            "calidad_del_aire": [50, 90],
+            "produccion": [0, 2]
+        }
+
+    mediciones = {}
+
+    for _, conf in sensor_types.items():
+        for mac in conf.get('macs'):
+            mediciones.update({mac: []})
 
     max_milisegundos = (hasta-desde).total_seconds()*1000
+
+    if cantidad is None and periodo is not None:
+        cantidad = int(max_milisegundos/(max(periodo, 1)*1000))
+
     step_milisegundos = int(max_milisegundos/cantidad)
+
+    logger.info(f"HARDCODEANDO {cantidad}*{sum([len(sensor_types[t]['macs']) for t in tipos])} MEDICIONES ...")
+    logger.info(f"TIPOS A HARDCODEAR: {tipos}")
 
     for sensor_type, conf in sensor_types.items():
 
         if sensor_type not in tipos:
             continue
-        
+
         base_creation_date = desde
-        
+
         for _ in range(0, cantidad):
-            for i,mac in enumerate(conf.get('macs')):
-                indice_anterior = len(mediciones)-i-len(conf.get('macs'))-1
-                anterior = mediciones[indice_anterior].value if indice_anterior>=0 else None
+            for i, mac in enumerate(conf.get('macs')):
+                anterior = mediciones[mac][-1].value if len(
+                    mediciones[mac]) > 0 else None
 
-                valor = _valor_medicion_random(sensor_type,anterior,variacion)
+                valor = _valor_medicion_random(
+                    sensor_type, anterior, variacion,limites[sensor_type],limites_activo)
 
-                fecha = base_creation_date + timedelta(milliseconds=random.randint(0,step_milisegundos))
+                fecha = base_creation_date + \
+                    timedelta(milliseconds=random.randint(
+                        0, step_milisegundos))
 
                 m = MedicionRaspberry.from_dict(
-                    {"mac":mac,
-                    "sensor_type":sensor_type,
-                    "value":valor,
-                    "unit":conf.get('unit'),
-                    "creation_date":fecha}
+                    {"mac": mac,
+                     "sensor_type": sensor_type,
+                     "value": valor,
+                     "unit": conf.get('unit'),
+                     "creation_date": fecha}
                 )
 
-                mediciones.append(m)
+                mediciones[mac].append(m)
 
-            base_creation_date+=timedelta(milliseconds=step_milisegundos)
+            base_creation_date += timedelta(milliseconds=step_milisegundos)
 
-    a = threading.Thread(target=_guardar_mediciones_async,args=[mediciones] , daemon=True)
+    reverse = datetime.now() > desde
+
+    mediciones = sum(mediciones.values(), [])
+    mediciones = list(reversed(mediciones) if reverse else mediciones)
+
+    logger.info(f"ENVIANDO VALORES HARDCODEADOS A DB ...")
+
+    a = threading.Thread(target=_guardar_mediciones_async,
+                         args=[mediciones], daemon=True)
     a.start()
 
+
 def _guardar_mediciones_async(mediciones):
-    logger.info(f"Insertando {len(mediciones)} mediciones asincronamente")
+    logger.info(f"INSERTANDO {len(mediciones)} MEDICIONES ASINCRONAMENTE")
     guardar_mediciones(mediciones)
-    logger.info(f"Insercion asincrona terminada.")
+    logger.info(f"INSERCION ASINCRONA TERMINADA.")

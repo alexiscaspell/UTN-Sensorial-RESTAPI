@@ -88,3 +88,10 @@ class ReporteInvalidoException(AppException):
 
     def __str__(self):
         return self.mensaje
+
+class ReporteYaExistenteException(AppException):
+    def __init__(self,nombre_reporte=None):
+        super().__init__(409, f"Reporte con nombre {nombre_reporte} ya existente.")
+
+    def __str__(self):
+        return self.mensaje
