@@ -1,9 +1,15 @@
 # DEPENDENCIAS
-
+Flask-Cors
 flask
 gunicorn
 requests
-bson
+pandas
 psutil
 netifaces
 stringcase
+pymongo[srv]
+mongoengine
+isoweek
+APScheduler
+matplotlib
+PyPDF2
