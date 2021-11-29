@@ -14,8 +14,8 @@ class ObjetivoDocument(EmbeddedDocument, EasyDocument):
     descripcion = StringField(db_field="description",required=False)
     valor = StringField(db_field="value",required=True)
     valor_calculado = StringField(db_field="calculatedValue",required=False)
-    fecha_inicial = DateTimeField(db_field="startDate",required=False)
-    fecha_final = DateTimeField(db_field="endDate",required=False)
+    fecha_inicial = StringField(db_field="startDate",required=False)
+    fecha_final = StringField(db_field="endDate",required=False)
 
     id_indicador = StringField(db_field="indicatorId",required=True)
     nombre_indicador = StringField(db_field="indicatorName",required=False)
