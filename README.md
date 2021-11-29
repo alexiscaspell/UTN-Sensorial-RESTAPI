@@ -38,7 +38,6 @@ from apps.configs.vars import Vars
 print(conf.get(Vars.NOMBRE_VARIABLE_EN_CODIGO))
 ```
 
-
 ## PAGINAS
 
 [Docker python 3.7 apine](https://hub.docker.com/_/python)
