@@ -115,7 +115,10 @@ def get_objetivo(id: str, objetivo_id: str) -> Objetivo:
 
     result = mongo_connector.get_by_filter(query)
 
-    if result is None or len(result) == 0 or len(result[0].get("objetivos")) == 0:
+    if result is None or len(result)==0:
+        raise TableroNotFoundException(id)
+
+    if len(result[0].get("objetivos")) == 0:
         raise ObjetivoNotFoundException(objetivo_id)
 
     objetivo_result = None

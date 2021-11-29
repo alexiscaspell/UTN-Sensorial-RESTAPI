@@ -16,7 +16,7 @@ def convert_to_case(cadena:str,case:Case):
 def _cast_to_datetime(value):
     converted_value = None
     possible_formats = ["%Y-%m-%dT%H:%M:%S.%fZ","%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S.%f","%Y-%m-%d %H:%M:%S.%fZ",
-                        "%Y-%m-%d %H:%M:%S.%f","%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", '%Y-%m-%d %H:%M:%S', "%Y-%m-%dT%H:%M:%SZ"]
+                        "%Y-%m-%d %H:%M:%S.%f","%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", '%Y-%m-%d %H:%M:%S', "%Y-%m-%dT%H:%M:%SZ","%Y-%m-%dT%H:%M:%S.%f+00:00"]
 
     for possible_format in possible_formats:
         try:
