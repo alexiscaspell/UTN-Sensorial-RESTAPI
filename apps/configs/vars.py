@@ -17,3 +17,4 @@ class Vars(Enum):
     SMTP_LOGIN = "SMTP_LOGIN"
     SMTP_HOST = "SMTP_HOST"
     SMTP_PORT = "SMTP_PORT"
+    CRON_ACTIVO = "CRON_ACTIVO"

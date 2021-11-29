@@ -23,10 +23,14 @@ registrar_blue_prints(app, 'apps/routes')
 
 logger = get_logger(__name__)
 
-connect(host=conf.get(Vars.MONGODB_URL),tlsCAFile=certifi.where())
+if "?ssl=true" in conf.get(Vars.MONGODB_URL):
+    connect(host=conf.get(Vars.MONGODB_URL),tlsCAFile=certifi.where())
+else:
+    connect(host=conf.get(Vars.MONGODB_URL))
 
-tasks_service.iniciar_proceso_automatico()
-tasks_service.cargar_reportes()
+if conf.get(Vars.CRON_ACTIVO,bool):
+    tasks_service.iniciar_proceso_automatico()
+    tasks_service.cargar_reportes()
 
 if __name__ == '__main__':
 

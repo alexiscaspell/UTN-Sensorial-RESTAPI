@@ -46,28 +46,35 @@ def _valor_medicion_random(sensor_type: str, anterior=None, variacion=0.15, limi
     return anterior
 
 
-def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=None, cantidad: int = None, periodo=None, limites=None):
+def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=None, cantidad: int = None, periodo=None, limites=None,sensors={}):
     tipos = ['temperatura', 'humedad', 'calidad_del_aire',
              'produccion'] if tipos is None else tipos
 
-    sensor_types = {
+    sensor_types_base = {
         'temperatura': {
-            'macs': ['T1', 'T2', 'T3'],
+            'macs': sensors["temperatura"]["macs"] if "temperatura" in sensors else ['T1', 'T2', 'T3'],
             'unit': 'ºC'
         },
         'humedad': {
-            'macs': ['H1', 'H2', 'H3'],
+            'macs': sensors["temperatura"]["macs"] if "humedad" in sensors else ['H1', 'H2', 'H3'],
             'unit': '% HR'
         },
         'calidad_del_aire': {
-            'macs': ['A1', 'A2', 'A3'],
+            'macs': sensors["temperatura"]["macs"] if "calidad_del_aire" in sensors else ['A1', 'A2', 'A3'],
             'unit': 'PPM CO2'
         },
         'produccion': {
-            'macs': ['P1', 'P2', 'P3'],
+            'macs': sensors["temperatura"]["macs"] if "produccion" in sensors else ['P1', 'P2', 'P3'],
             'unit': 'bool'
         }
     }
+
+    sensor_types = sensor_types_base
+
+    for type in sensor_types_base:
+        if type not in sensors:
+            sensor_types.pop(type,None)
+
 
     limites_activo= limites is not None
 
