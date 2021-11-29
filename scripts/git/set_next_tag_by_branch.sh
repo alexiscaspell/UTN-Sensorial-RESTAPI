@@ -14,11 +14,11 @@ v_part3=${subtags[2]}
 
 case $BRANCH in
 
-  dev | development | desarrollo)
+  dev | development | desarrollo | desa )
     v_part3=$(($v_part3+1))
     ;;
 
-  staging | "pre" | stage )
+  staging | "pre" | stage | qa )
     v_part3=0
     v_part2=$(($v_part2+1))
     ;;

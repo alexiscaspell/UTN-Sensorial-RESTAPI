@@ -6,9 +6,11 @@ on:
       - 'dev'
       - 'development'
       - 'desarrollo'
+      - 'desa'
       - 'pre'
       - 'staging'
       - 'stage'
+      - 'qa'
 name: deploy
 jobs:
   deploy:
@@ -64,3 +66,14 @@ jobs:
             "Realease v${{ env.NEXT_TAG }}"
         draft: false
         prerelease: false
+
+    - name: deploy to heroku
+      uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "${{secrets.HEROKU_APP_NAME}}" #Must be unique in Heroku
+        heroku_email: "${{secrets.HEROKU_EMAIL}}"
+        usedocker: true
+        # healthcheck: https://sensorial-back.herokuapp.com/alive
+        # checkstring: '{"estado": "vivo"}'
+        # delay: 30

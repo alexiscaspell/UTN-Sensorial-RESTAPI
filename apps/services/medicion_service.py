@@ -65,15 +65,13 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
         },
         'produccion': {
             'macs': sensors["temperatura"]["macs"] if "produccion" in sensors else ['P1', 'P2', 'P3'],
-            'unit': 'bool'
-        }
-    }
 
     sensor_types = sensor_types_base
 
     for type in sensor_types_base:
         if type not in sensors:
             sensor_types.pop(type,None)
+
 
     limites_activo= limites is not None
 
