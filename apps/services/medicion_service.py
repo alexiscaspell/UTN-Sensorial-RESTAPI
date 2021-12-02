@@ -69,7 +69,7 @@ def hardcodear(desde: datetime, hasta: datetime, variacion: float = 0.15, tipos=
         }
     }
 
-    sensor_types = sensor_types_base
+    sensor_types = sensor_types_base.copy()
 
     for type in sensor_types_base:
         if type not in sensores:
